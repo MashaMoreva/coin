@@ -15,6 +15,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "navigo": "^8.11.1"
+    "navigo": "^8.11.1",
+    "redom": "^4.0.0"
   }
 }
