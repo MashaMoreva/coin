@@ -1,0 +1,19 @@
+@import "./fonts.scss";
+@import "./colors.scss";
+
+body {
+  margin: 0 auto;
+  font-family: "Ubuntu", sans-serif;
+  max-width: 1440px;
+  background-color: $white;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  padding: 50px;
+}
