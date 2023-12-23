@@ -22,6 +22,7 @@
   }
 
   &-fieldset {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -45,6 +46,14 @@
     border-radius: 7px;
     border: 1px solid $gray5;
     width: 300px;
+  }
+  &-error-message {
+    position: absolute;
+    color: $error;
+    top: 35px;
+    left: 75px;
+    font-size: 13px;
+    font-weight: 500;
   }
 
   &-button {
