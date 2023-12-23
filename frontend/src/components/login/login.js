@@ -1,6 +1,5 @@
 import { el } from "redom";
 import "./login.scss";
-// import { loginAPI } from "../../api";
 
 export function createLoginForm() {
   const loginContainer = el("div.login", [
@@ -28,7 +27,7 @@ export function createLoginForm() {
         el("span.login-error-message", { id: "passwordError" }),
       ]),
 
-      el("button.login-button", { type: "submit" }, "Войти"),
+      el("button.login-button", { type: "submit", disabled: true }, "Войти"),
     ]),
   ]);
 

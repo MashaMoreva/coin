@@ -68,5 +68,9 @@
     line-height: 20px;
     letter-spacing: -0.14px;
     max-width: max-content;
+    &:disabled {
+      background-color: $gray5;
+      cursor: not-allowed;
+    }
   }
 }
