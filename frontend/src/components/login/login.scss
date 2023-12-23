@@ -1,8 +1,63 @@
 @import "../../styles/colors.scss";
 
 .login {
+  max-width: 500px;
+  background-color: $gray7;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 50px 85px 50px 40px;
+
   &-title {
+    margin-left: 65px;
+    margin-bottom: 35px;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.68px;
   }
+
   &-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-fieldset {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-bottom: 25px;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  &-label {
+    color: $secondary1;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.16px;
+  }
+
+  &-input {
+    padding: 8px 10px 8px 16px;
+    border-radius: 7px;
+    border: 1px solid $gray5;
+    width: 300px;
+  }
+
+  &-button {
+    margin-top: 30px;
+    margin-left: 75px;
+    border-radius: 7px;
+    background-color: $primary;
+    padding: 14px 21px;
+    color: $white;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: -0.14px;
+    max-width: max-content;
   }
 }
