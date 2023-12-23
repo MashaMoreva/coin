@@ -1,5 +1,5 @@
 import { el } from "redom";
-import logo from "./assets/images/logo.svg";
+import logo from "../../assets/images/logo.svg";
 import "./header.scss";
 
 export const createHeader = () => {

@@ -1,8 +1,8 @@
 import { el, setChildren } from "redom";
 import Navigo from "navigo";
 import "./styles/styles.scss";
-import { createHeader } from "./header.js";
-import { createLoginForm } from "./login.js";
+import { createHeader } from "./components/header/header.js";
+import { createLoginForm } from "./components/login/login.js";
 
 const mainContainer = el("main");
 const headerContainer = createHeader();
