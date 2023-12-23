@@ -1,5 +1,6 @@
 import { el } from "redom";
 import "./login.scss";
+// import { loginAPI } from "../../api";
 
 export function createLoginForm() {
   const loginContainer = el("div.login", [
@@ -12,8 +13,8 @@ export function createLoginForm() {
           id: "username",
           name: "username",
           placeholder: "Введите логин",
-          required: true,
         }),
+        el("span.login-error-message", { id: "usernameError" }),
       ]),
 
       el("fieldset.login-fieldset", [
@@ -23,8 +24,8 @@ export function createLoginForm() {
           id: "password",
           name: "password",
           placeholder: "Введите пароль",
-          required: true,
         }),
+        el("span.login-error-message", { id: "passwordError" }),
       ]),
 
       el("button.login-button", { type: "submit" }, "Войти"),
