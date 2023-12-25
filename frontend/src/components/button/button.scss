@@ -1,0 +1,19 @@
+@import "../../styles/colors.scss";
+
+.button {
+  margin-top: 30px;
+  margin-left: 75px;
+  border-radius: 7px;
+  background-color: $primary;
+  padding: 14px 21px;
+  color: $white;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: -0.14px;
+  max-width: max-content;
+  &:disabled {
+    background-color: $gray5;
+    cursor: not-allowed;
+  }
+}
