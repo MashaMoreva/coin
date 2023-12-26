@@ -20,7 +20,7 @@ checkAuthorization();
 
 router
   .on("/login", () => {
-    setChildren(mainContainer, [createLoginForm()]);
+    setChildren(mainContainer, [createLoginForm(router)]);
   })
   .on("/accounts", () => {
     setChildren(mainContainer, [el("h1", "Страница счетов пользователя")]);
