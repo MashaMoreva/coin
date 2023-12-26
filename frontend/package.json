@@ -24,6 +24,7 @@
   "dependencies": {
     "navigo": "^8.11.1",
     "redom": "^4.0.0",
+    "ymaps": "^0.2.1",
     "yup": "^1.3.3"
   }
 }
