@@ -3,6 +3,7 @@ import Navigo from "navigo";
 import "./styles/styles.scss";
 import { createHeader } from "./components/header/header.js";
 import { createLoginForm } from "./components/login/login.js";
+import { createMap } from "./components/map/map.js";
 
 const router = new Navigo(null, true, "#");
 
@@ -32,7 +33,7 @@ function checkAuthorization() {
       setChildren(mainContainer, [el("h1", "Страница валюты")]);
     })
     .on("/atm-map", () => {
-      setChildren(mainContainer, [el("h1", "Страница с картой банкоматов")]);
+      setChildren(mainContainer, [createMap()]);
     })
     .resolve();
 }
