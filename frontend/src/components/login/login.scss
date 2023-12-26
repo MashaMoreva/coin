@@ -46,6 +46,16 @@
     border-radius: 7px;
     border: 1px solid $gray5;
     width: 300px;
+    &.error {
+      border-color: $error;
+    }
+    &.success {
+      border-color: $success;
+    }
+  }
+  &-wrapper {
+    display: flex;
+    align-items: center;
   }
   &-error-message {
     position: absolute;
@@ -54,5 +64,13 @@
     left: 75px;
     font-size: 13px;
     font-weight: 500;
+  }
+  &-error {
+    background-image: url(../../assets/images/error.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    color: $error;
+    margin: 30px 0 0 20px;
+    padding-left: 24px;
   }
 }
