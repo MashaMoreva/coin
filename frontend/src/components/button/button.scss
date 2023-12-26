@@ -1,19 +1,77 @@
 @import "../../styles/colors.scss";
 
+// .button {
+//   --primary-color: $primary;
+//   --text-color: $white;
+
+//   margin-top: 30px;
+//   margin-left: 75px;
+//   border-radius: 7px;
+//   padding: 14px 21px;
+//   font-size: 14px;
+//   font-weight: 700;
+//   line-height: 20px;
+//   letter-spacing: -0.14px;
+//   max-width: max-content;
+
+//   &:disabled {
+//     background-color: $gray5;
+//     cursor: not-allowed;
+//   }
+// }
+
 .button {
-  margin-top: 30px;
-  margin-left: 75px;
   border-radius: 7px;
-  background-color: $primary;
-  padding: 14px 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 24px; // Размер по умолчанию
   color: $white;
-  font-size: 14px;
+  background-color: $primary;
+  letter-spacing: -0.16px;
   font-weight: 700;
-  line-height: 20px;
-  letter-spacing: -0.14px;
-  max-width: max-content;
-  &:disabled {
-    background-color: $gray5;
-    cursor: not-allowed;
+
+  &.icon {
+    // Стили для кнопки с иконкой
+    // Можете определить размер и стили для иконки здесь
+  }
+
+  &:hover {
+    // Стили для кнопки при наведении
+    // Например, изменение цвета фона и текста
+    // background-color: $primary-hover;
+    // color: $white-hover;
+    // border-color: $primary-hover;
+  }
+
+  &:focus,
+  &:active {
+    // Стили для кнопки при фокусе или активации
+    // background-color: $primary-pressed;
+    // color: $white-pressed;
+    // border-color: $primary-pressed;
+  }
+
+  // ... другие стили для кнопок по умолчанию
+}
+
+.button.reversed {
+  // Стили для кнопки с обратными цветами
+  color: $primary;
+  background-color: $white;
+  border-color: $primary;
+
+  &:hover {
+    // color: $primary-hover;
+    // background-color: $white-hover;
+    // border-color: $primary-hover;
+  }
+
+  &:focus,
+  &:active {
+    // color: $primary-pressed;
+    // background-color: $white-pressed;
+    // border-color: $primary-pressed;
   }
 }

@@ -1,27 +1,27 @@
 import { el } from "redom";
 import "./button.scss";
 
-export function createButton(
+export function createButton({
   text,
   onClick,
   isDisabled = false,
-  bgColor = "$primary",
-  textColor = "$white",
-  iconClass = ""
-) {
-  const buttonContent = [
-    iconClass && el("span.button-icon", { class: iconClass }),
-    text,
-  ];
+  hasIcon = false,
+  reversedColors = false,
+}) {
+  const buttonClasses = `button ${isDisabled ? "disabled" : ""} ${
+    hasIcon ? "icon" : ""
+  } ${reversedColors ? "reversed" : ""}`;
 
-  return el(
-    "button.button",
+  const button = el(
+    "button",
     {
-      type: "submit",
+      class: buttonClasses,
+      type: "button",
       disabled: isDisabled,
       onclick: onClick,
-      style: `background-color: ${bgColor}; color: ${textColor};`,
     },
-    buttonContent
+    [hasIcon && el("span.button-icon"), el("span.button-text", text)]
   );
+
+  return button;
 }
