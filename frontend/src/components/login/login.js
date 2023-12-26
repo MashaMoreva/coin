@@ -26,7 +26,11 @@ export function createLoginForm(router) {
       ),
 
       el("div.login-wrapper", [
-        createButton("Войти", handleLoginFormSubmit, true),
+        createButton({
+          text: "Войти",
+          onClick: handleLoginFormSubmit,
+          isDisabled: true,
+        }),
         el("span.login-error", { id: "authErrorMessage" }),
       ]),
     ]),
@@ -76,7 +80,7 @@ export function createLoginForm(router) {
     } catch (error) {
       console.error("Ошибка сети:", error);
       displayAuthorizationErrorMessage(
-        "Произошла ошибка сети. Пожалуйста, проверьте подключение.",
+        "Произошла ошибка сети. Проверьте подключение.",
         errorMessageElement
       );
     }
