@@ -12,50 +12,99 @@ export function createLoginForm(router) {
   const loginContainer = el("div.login", [
     el("h1.login-title", "Вход в аккаунт"),
     el("form.login-form", { id: "loginForm" }, [
-      el("fieldset.login-fieldset", [
-        el("label.login-label", { for: "username" }, "Логин:"),
-        el("input.login-input", {
-          type: "text",
-          id: "username",
-          name: "username",
-          placeholder: "Введите логин",
-          oninput: handleInputFactory("username", validationState),
-        }),
-        el("span.login-error-message", { id: "usernameError" }),
-      ]),
+      createFieldset(
+        "Логин:",
+        "username",
+        "Введите логин",
+        handleInputFactory("username", validationState)
+      ),
+      createFieldset(
+        "Пароль:",
+        "password",
+        "Введите пароль",
+        handleInputFactory("password", validationState)
+      ),
 
-      el("fieldset.login-fieldset", [
-        el("label.login-label", { for: "password" }, "Пароль:"),
-        el("input.login-input", {
-          type: "password",
-          id: "password",
-          name: "password",
-          placeholder: "Введите пароль",
-          oninput: handleInputFactory("password", validationState),
-        }),
-        el("span.login-error-message", { id: "passwordError" }),
+      el("div.login-wrapper", [
+        createButton("Войти", handleLoginFormSubmit, true),
+        el("span.login-error", { id: "authErrorMessage" }),
       ]),
-
-      createButton("Войти", handleLoginFormSubmit, true),
     ]),
   ]);
 
   const loginForm = loginContainer.querySelector("#loginForm");
   loginForm.addEventListener("submit", handleLoginFormSubmit);
 
-  function handleLoginFormSubmit(event) {
-    event.preventDefault();
-    localStorage.setItem("isAuthorized", "true");
-    router.navigate("/accounts");
+  async function handleLoginFormSubmit(e) {
+    e.preventDefault();
+
+    const login = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const errorMessageElement = document.getElementById("authErrorMessage");
+
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ login, password }),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+
+        if (responseData.error) {
+          const errorMessageElement =
+            document.getElementById("authErrorMessage");
+          displayAuthorizationErrorMessage(
+            responseData.error,
+            errorMessageElement
+          );
+        } else {
+          const { token } = responseData.payload;
+          localStorage.setItem("token", token);
+          router.navigate("/accounts");
+        }
+      } else {
+        console.error("Ошибка авторизации:", response.statusText);
+        displayAuthorizationErrorMessage(
+          "Ошибка при авторизации. Попробуйте еще раз позже.",
+          errorMessageElement
+        );
+      }
+    } catch (error) {
+      console.error("Ошибка сети:", error);
+      displayAuthorizationErrorMessage(
+        "Произошла ошибка сети. Пожалуйста, проверьте подключение.",
+        errorMessageElement
+      );
+    }
   }
 
   return loginContainer;
+}
+
+function createFieldset(labelText, fieldName, placeholder, handleInput) {
+  return el("fieldset.login-fieldset", [
+    el("label.login-label", { for: fieldName }, labelText),
+    el("input.login-input", {
+      type: fieldName === "password" ? "password" : "text",
+      id: fieldName,
+      name: fieldName,
+      placeholder: placeholder,
+      oninput: handleInput,
+    }),
+    el("span.login-error-message", { id: `${fieldName}Error` }),
+  ]);
 }
 
 function handleInputFactory(fieldName, validationState) {
   return function handleInput() {
     const inputValue = document.getElementById(fieldName).value;
     const errorMessageElement = document.getElementById(`${fieldName}Error`);
+    const loginButton = document.querySelector(".button");
+    const inputElement = document.getElementById(fieldName);
 
     const validationSchema = yup.object().shape({
       username: yup
@@ -75,15 +124,24 @@ function handleInputFactory(fieldName, validationState) {
       errorMessageElement.textContent = "";
       validationState[fieldName] = true;
 
-      const loginButton = document.querySelector(".button");
+      inputElement.classList.remove("error");
+      inputElement.classList.add("success");
+
       loginButton.disabled = !Object.values(validationState).every(
         (state) => state
       );
     } catch (error) {
       errorMessageElement.textContent = error.message;
       validationState[fieldName] = false;
-      const loginButton = document.querySelector(".button");
+
+      inputElement.classList.remove("success");
+      inputElement.classList.add("error");
+
       loginButton.disabled = true;
     }
   };
+}
+
+function displayAuthorizationErrorMessage(message, errorMessageElement) {
+  errorMessageElement.textContent = message;
 }
