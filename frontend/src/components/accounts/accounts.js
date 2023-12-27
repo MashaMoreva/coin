@@ -11,8 +11,8 @@ export function createAccounts() {
       createButton({
         text: "Создать новый счёт",
         hasIcon: true,
-        iconClass: "icon-custom",
-        extraClass: "custom-button",
+        iconClass: "accounts-controls-button-icon",
+        extraClass: "accounts-controls-button",
       }),
     ]),
   ]);

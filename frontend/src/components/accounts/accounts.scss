@@ -1,3 +1,5 @@
+@import "../../styles/colors.scss";
+
 .accounts {
   display: flex;
   flex-direction: column;
@@ -11,14 +13,21 @@
       margin-right: 35px;
     }
     &-select {
+      width: 300px;
+      border-radius: 7px;
+      border: 1px solid $primary;
+      padding: 8px 16px;
+      background: url(../../assets/images/arrow.svg) no-repeat right 23px
+        center/11px;
+    }
+
+    &-button-icon {
+      background-image: url(../../assets/images/plus.svg);
+      width: 24px;
+      height: 24px;
+    }
+    &-button {
+      margin-left: auto;
     }
   }
-}
-
-.icon-custom {
-  background-image: url(../../assets/images/plus.svg);
-  background-size: contain; // Adjust this property as needed
-  width: 20px; // Adjust the width as needed
-  height: 20px; // Adjust the height as needed
-  display: inline-block; // Ensure the icon is displayed as an inline block
 }
