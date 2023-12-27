@@ -5,12 +5,19 @@ export function createButton({
   text,
   onClick,
   isDisabled = false,
+  iconClass = "",
   hasIcon = false,
   reversedColors = false,
+  extraClass = "",
 }) {
   const buttonClasses = `button ${isDisabled ? "disabled" : ""} ${
     hasIcon ? "icon" : ""
-  } ${reversedColors ? "reversed" : ""}`;
+  } ${reversedColors ? "reversed" : ""} ${extraClass}`;
+
+  const buttonContent = [
+    hasIcon && el("span.button-icon", { class: iconClass }),
+    el("span.button-text", text),
+  ];
 
   const button = el(
     "button",
@@ -20,7 +27,7 @@ export function createButton({
       disabled: isDisabled,
       onclick: onClick,
     },
-    [hasIcon && el("span.button-icon"), el("span.button-text", text)]
+    buttonContent
   );
 
   return button;
