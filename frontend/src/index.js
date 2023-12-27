@@ -4,6 +4,7 @@ import "./styles/styles.scss";
 import { createHeader } from "./components/header/header.js";
 import { createLoginForm } from "./components/login/login.js";
 import { createMap } from "./components/map/map.js";
+import { createAccounts } from "./components/accounts/accounts.js";
 
 const router = new Navigo(null, true, "#");
 
@@ -22,7 +23,7 @@ function checkAuthorization() {
       setChildren(mainContainer, [createLoginForm(router)]);
     })
     .on("/accounts", () => {
-      setChildren(mainContainer, [el("h1", "Страница счетов пользователя")]);
+      setChildren(mainContainer, [createAccounts()]);
     })
     .on("/account/:id", (params) => {
       setChildren(mainContainer, [
