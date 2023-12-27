@@ -4,7 +4,7 @@ import "./header.scss";
 import "../../styles/colors.scss";
 import { createButton } from "../button/button";
 
-export const createHeader = (isAuthorized, router) => {
+export function createHeader(isAuthorized, router) {
   const buttons = isAuthorized
     ? [
         createButton({
@@ -32,4 +32,4 @@ export const createHeader = (isAuthorized, router) => {
     el("img.header-logo", { src: logo }),
     buttonsWrapper,
   ]);
-};
+}
