@@ -1,0 +1,24 @@
+.accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+
+  &-controls {
+    display: flex;
+    &-title {
+      font-size: 34px;
+      letter-spacing: -0.68px;
+      margin-right: 35px;
+    }
+    &-select {
+    }
+  }
+}
+
+.icon-custom {
+  background-image: url(../../assets/images/plus.svg);
+  background-size: contain; // Adjust this property as needed
+  width: 20px; // Adjust the width as needed
+  height: 20px; // Adjust the height as needed
+  display: inline-block; // Ensure the icon is displayed as an inline block
+}
