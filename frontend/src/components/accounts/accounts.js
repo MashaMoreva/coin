@@ -2,6 +2,7 @@ import "./accounts.scss";
 import { el, mount } from "redom";
 import { createAccountCard } from "./accountCard/accountCard";
 import { createButton } from "../button/button";
+import { createNewAccount, getAccounts } from "../../helpers/api";
 
 export function createAccounts() {
   const accountsContainer = el("div.accounts", [
@@ -19,44 +20,22 @@ export function createAccounts() {
         hasIcon: true,
         iconClass: "accounts-controls-button-icon",
         extraClass: "accounts-controls-button",
+        onClick: () => createNewAccount(accountCardsContainer),
       }),
     ]),
+    el("div.accounts-container"),
   ]);
 
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("Authorization token not found");
-  }
+  const accountCardsContainer = accountsContainer.querySelector(
+    ".accounts-container"
+  );
 
-  fetch("http://localhost:3000/accounts", {
-    method: "GET",
-    headers: {
-      Authorization: `Basic ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Failed to fetch user accounts: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((responseData) => {
-      if (!responseData.payload || !Array.isArray(responseData.payload)) {
-        throw new Error(
-          "Invalid response format: payload is missing or not an array"
-        );
-      }
-
-      const userAccounts = responseData.payload;
-      userAccounts.forEach((account) => {
-        const accountCard = createAccountCard(account);
-        mount(accountsContainer, accountCard);
-      });
-    })
-    .catch((error) => {
-      console.error("Error creating accounts:", error.message);
+  getAccounts().then((userAccounts) => {
+    userAccounts.forEach((account) => {
+      const accountCard = createAccountCard(account);
+      mount(accountCardsContainer, accountCard);
     });
+  });
 
   const select = accountsContainer.querySelector(".accounts-controls-select");
   const selectOptions = accountsContainer.querySelector(
