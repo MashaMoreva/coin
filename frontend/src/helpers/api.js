@@ -62,3 +62,14 @@ export async function createNewAccount(accountCardsContainer) {
     throw error;
   }
 }
+
+export async function getAccountDetails(accountId, router) {
+  try {
+    const responseData = await handleFetch(`/account/${accountId}`, "GET");
+    const { payload } = responseData;
+    
+    return payload;
+  } catch (error) {
+    throw error;
+  }
+}
