@@ -2,7 +2,7 @@ import "./account.scss";
 import { el } from "redom";
 import { getAccountDetails } from "../../helpers/api";
 import { createButton } from "../button/button";
-import { createFieldset } from "../../helpers/createFieldset";
+import { createFieldset } from "../fieldset/fieldset";
 
 export function createAccount(id) {
   const accountContainer = el("div.account");
