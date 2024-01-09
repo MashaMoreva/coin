@@ -22,6 +22,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
+    "chart.js": "^4.4.1",
     "navigo": "^8.11.1",
     "redom": "^4.0.0",
     "ymaps": "^0.2.1",
