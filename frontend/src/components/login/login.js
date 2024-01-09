@@ -2,6 +2,7 @@ import { el } from "redom";
 import * as yup from "yup";
 import "./login.scss";
 import { createButton } from "../button/button";
+import { createFieldset } from "../fieldset/fieldset";
 
 export function createLoginForm(router) {
   const validationState = {
@@ -16,20 +17,23 @@ export function createLoginForm(router) {
         "Логин:",
         "username",
         "Введите логин",
+        "text",
         handleInputFactory("username", validationState)
       ),
       createFieldset(
         "Пароль:",
         "password",
         "Введите пароль",
+        "password",
         handleInputFactory("password", validationState)
       ),
 
       el("div.login-wrapper", [
         createButton({
           text: "Войти",
-          onClick: handleLoginFormSubmit,
           isDisabled: true,
+          onClick: handleLoginFormSubmit,
+          extraClass: "login-button",
         }),
         el("span.login-error", { id: "authErrorMessage" }),
       ]),
@@ -89,20 +93,6 @@ export function createLoginForm(router) {
   return loginContainer;
 }
 
-function createFieldset(labelText, fieldName, placeholder, handleInput) {
-  return el("fieldset.login-fieldset", [
-    el("label.login-label", { for: fieldName }, labelText),
-    el("input.login-input", {
-      type: fieldName === "password" ? "password" : "text",
-      id: fieldName,
-      name: fieldName,
-      placeholder: placeholder,
-      oninput: handleInput,
-    }),
-    el("span.login-error-message", { id: `${fieldName}Error` }),
-  ]);
-}
-
 function handleInputFactory(fieldName, validationState) {
   return function handleInput() {
     const inputValue = document.getElementById(fieldName).value;
@@ -128,6 +118,7 @@ function handleInputFactory(fieldName, validationState) {
       errorMessageElement.textContent = "";
       validationState[fieldName] = true;
 
+      errorMessageElement.classList.remove("error");
       inputElement.classList.remove("error");
       inputElement.classList.add("success");
 
@@ -140,6 +131,7 @@ function handleInputFactory(fieldName, validationState) {
 
       inputElement.classList.remove("success");
       inputElement.classList.add("error");
+      errorMessageElement.classList.add("error");
 
       loginButton.disabled = true;
     }
