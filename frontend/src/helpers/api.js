@@ -1,63 +1,64 @@
-import { createAccountCard } from "../components/accounts/accountCard/accountCard";
-export async function getAccounts() {
+import { updateAccounts } from "../helpers/updateAccounts";
+
+const API_BASE_URL = "http://localhost:3000";
+
+function getAuthorizationToken() {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    throw new Error("Authorization token not found");
+    throw new Error("Токен авторизации не найден");
   }
 
+  return token;
+}
+
+async function handleFetch(url, method) {
+  const token = getAuthorizationToken();
+
   try {
-    const response = await fetch("http://localhost:3000/accounts", {
-      method: "GET",
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      method,
       headers: {
         Authorization: `Basic ${token}`,
         "Content-Type": "application/json",
       },
     });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch user accounts: ${response.status}`);
+      throw new Error(`Запрос не выполнен: ${response.status}`);
     }
-    const responseData = await response.json();
-    if (!responseData.payload || !Array.isArray(responseData.payload)) {
+
+    return response.json();
+  } catch (error) {
+    console.error(`Ошибка в ${method} при запросе к ${url}:`, error.message);
+    throw error;
+  }
+}
+
+export async function getAccounts() {
+  try {
+    const responseData = await handleFetch("/accounts", "GET");
+    const { payload } = responseData;
+
+    if (!payload || !Array.isArray(payload)) {
       throw new Error(
-        "Invalid response format: payload is missing or not an array"
+        "Недопустимый формат ответа: полезная нагрузка отсутствует или не является массивом"
       );
     }
-    return responseData.payload;
+
+    return payload;
   } catch (error) {
-    console.error("Error fetching user accounts:", error.message);
+    throw error;
   }
 }
 
 export async function createNewAccount(accountCardsContainer) {
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    throw new Error("Authorization token not found");
-  }
-
   try {
-    const response = await fetch("http://localhost:3000/create-account", {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    await handleFetch("/create-account", "POST");
 
-    if (!response.ok) {
-      throw new Error(`Failed to create a new account: ${response.status}`);
-    }
     const userAccounts = await getAccounts();
-
-    updateAccountList(userAccounts, accountCardsContainer);
+    updateAccounts(userAccounts, accountCardsContainer);
   } catch (error) {
-    console.error("Error creating a new account:", error.message);
+    throw error;
   }
-}
-
-function updateAccountList(userAccounts, accountCardsContainer) {
-  accountCardsContainer.innerHTML = userAccounts
-    .map((account) => createAccountCard(account).outerHTML)
-    .join("");
 }
