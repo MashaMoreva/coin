@@ -3,7 +3,7 @@ import { el } from "redom";
 import { createButton } from "../../button/button";
 import { formatDate } from "../../../helpers/formatDate";
 
-export function createAccountCard(account) {
+export function createAccountCard(account, router) {
   let lastTransactionDate = "Нет транзакций";
 
   if (account.transactions && account.transactions.length > 0) {
@@ -21,6 +21,7 @@ export function createAccountCard(account) {
       createButton({
         text: "Открыть",
         extraClass: "card-button",
+        onClick: () => router.navigate(`/account/${account.account}`),
       }),
     ]),
   ]);
