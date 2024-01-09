@@ -4,7 +4,7 @@ import { createAccountCard } from "./accountCard/accountCard";
 import { createButton } from "../button/button";
 import { createNewAccount, getAccounts } from "../../helpers/api";
 
-export function createAccounts() {
+export function createAccounts(router) {
   const accountsContainer = el("div.accounts", [
     el("div.accounts-controls", [
       el("h1.accounts-controls-title", "Ваши счета"),
@@ -32,7 +32,7 @@ export function createAccounts() {
 
   getAccounts().then((userAccounts) => {
     userAccounts.forEach((account) => {
-      const accountCard = createAccountCard(account);
+      const accountCard = createAccountCard(account, router);
       mount(accountCardsContainer, accountCard);
     });
   });
