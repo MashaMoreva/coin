@@ -1,0 +1,79 @@
+@import "../../styles/colors.scss";
+
+.account {
+  &-controls {
+    display: flex;
+    margin-bottom: 30px;
+    &-title {
+      font-size: 34px;
+      letter-spacing: -0.68px;
+      margin-right: 35px;
+    }
+    &-button-icon {
+      background-image: url(../../assets/images/arro-left.svg);
+      width: 24px;
+      height: 24px;
+    }
+    &-button {
+      margin-left: auto;
+    }
+  }
+  &-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    &-number {
+      font-size: 34px;
+      font-weight: 400;
+      letter-spacing: -0.68px;
+    }
+    &-balance {
+      display: flex;
+      gap: 50px;
+      align-items: center;
+      &-subtitle {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+      }
+      &-digits {
+        font-size: 20px;
+        font-weight: 400;
+        letter-spacing: -0.4px;
+        margin-top: 5px;
+      }
+    }
+  }
+  &-wrapper {
+    display: flex;
+    gap: 50px;
+    &-form {
+      display: flex;
+      flex-direction: column;
+      border-radius: 50px;
+      background-color: $gray7;
+      padding: 25px 50px;
+      &-title {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        margin-bottom: 25px;
+      }
+      &-button-icon {
+        background-image: url(../../assets/images/mail.svg);
+        width: 24px;
+        height: 24px;
+      }
+      &-button {
+        margin-top: 25px;
+        width: fit-content;
+        margin-left: 202px;
+      }
+    }
+  }
+  &-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-gap: 50px 70px;
+  }
+}
