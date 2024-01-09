@@ -21,6 +21,12 @@ h3 {
   margin: 0;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 fieldset {
   margin: 0;
   padding: 0;
@@ -40,9 +46,14 @@ button {
   cursor: pointer;
 }
 
+select {
+  appearance: none;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
+}
+
 main {
   padding: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
