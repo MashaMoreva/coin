@@ -3,12 +3,19 @@ import { el } from "redom";
 import { getAccountDetails } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
+import Chart from "chart.js/auto";
 
 export function createAccount(id) {
   const accountContainer = el("div.account");
+  const chartCanvas = el("canvas", {
+    id: "balanceChart",
+    width: "584",
+    height: "200",
+  });
 
   getAccountDetails(id)
     .then((accountDetails) => {
+      console.log("Транзакции:", accountDetails.transactions);
       const detailsContainer = el("div.account", [
         el("div.account-controls", [
           el("h1.account-controls-title", "Простосмотр счёта"),
@@ -31,7 +38,7 @@ export function createAccount(id) {
         ]),
         el("div.account-wrapper", [
           el("div.account-wrapper-form", [
-            el("p.account-wrapper-form-title", "Новый перевод"),
+            el("p.account-wrapper-title", "Новый перевод"),
             createFieldset(
               "Номер счёта получателя",
               "account",
@@ -51,10 +58,15 @@ export function createAccount(id) {
               extraClass: "account-wrapper-form-button",
             }),
           ]),
-          el("div.account-wrapper-chart"),
+          el("div.account-wrapper-chart", [
+            el("p.account-wrapper-title", "Динамика баланса"),
+            chartCanvas,
+          ]),
         ]),
       ]);
       accountContainer.appendChild(detailsContainer);
+
+      buildBalanceChart(chartCanvas, accountDetails.transactions);
     })
 
     .catch((error) => {
@@ -62,4 +74,95 @@ export function createAccount(id) {
     });
 
   return accountContainer;
+}
+
+function buildBalanceChart(canvas, transactions) {
+  // Группируем транзакции по месяцам и считаем сумму
+  const monthlySums = transactions.reduce((acc, transaction) => {
+    const date = new Date(transaction.date);
+    const yearMonth = getMonthYear(date);
+
+    if (!acc[yearMonth]) {
+      acc[yearMonth] = 0;
+    }
+
+    acc[yearMonth] += parseFloat(transaction.amount);
+
+    return acc;
+  }, {});
+
+  // Получаем массивы данных для графика
+  const allMonths = Object.keys(monthlySums);
+  const recentMonths = getRecentMonths(allMonths, 6);
+  const balances = recentMonths.map((month) => monthlySums[month]);
+
+  console.log("Months:", recentMonths);
+  console.log("Balances:", balances);
+
+  const ctx = canvas.getContext("2d");
+
+  const maxBalance = Math.max(...balances);
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: recentMonths,
+      datasets: [
+        {
+          data: balances,
+          backgroundColor: "rgba(17, 106, 204, 1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          position: "right",
+          min: 0,
+          max: maxBalance,
+          beginAtZero: true,
+          grid: {
+            display: false,
+          },
+          ticks: {
+            stepSize: maxBalance,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
+  });
+}
+
+// Функция для получения последних n месяцев
+function getRecentMonths(allMonths, n) {
+  return allMonths.slice(-n);
+}
+
+function getMonthYear(date) {
+  const monthNames = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+  ];
+
+  return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }
