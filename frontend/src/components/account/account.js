@@ -4,6 +4,7 @@ import { getAccountDetails } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 import Chart from "chart.js/auto";
+import { getMonthYear, getRecentMonths } from "../../helpers/getMonths";
 
 export function createAccount(id) {
   const accountContainer = el("div.account");
@@ -77,7 +78,6 @@ export function createAccount(id) {
 }
 
 function buildBalanceChart(canvas, transactions) {
-  // Группируем транзакции по месяцам и считаем сумму
   const monthlySums = transactions.reduce((acc, transaction) => {
     const date = new Date(transaction.date);
     const yearMonth = getMonthYear(date);
@@ -91,7 +91,6 @@ function buildBalanceChart(canvas, transactions) {
     return acc;
   }, {});
 
-  // Получаем массивы данных для графика
   const allMonths = Object.keys(monthlySums);
   const recentMonths = getRecentMonths(allMonths, 6);
   const balances = recentMonths.map((month) => monthlySums[month]);
@@ -120,6 +119,13 @@ function buildBalanceChart(canvas, transactions) {
           grid: {
             display: false,
           },
+          // ticks: {
+          //   font: {
+          //     size: 20,
+          //     weight: "bold",
+          //     letterSpacing: -0.4,
+          //   },
+          // },
         },
         y: {
           position: "right",
@@ -141,28 +147,4 @@ function buildBalanceChart(canvas, transactions) {
       },
     },
   });
-}
-
-// Функция для получения последних n месяцев
-function getRecentMonths(allMonths, n) {
-  return allMonths.slice(-n);
-}
-
-function getMonthYear(date) {
-  const monthNames = [
-    "Январь",
-    "Февраль",
-    "Март",
-    "Апрель",
-    "Май",
-    "Июнь",
-    "Июль",
-    "Август",
-    "Сентябрь",
-    "Октябрь",
-    "Ноябрь",
-    "Декабрь",
-  ];
-
-  return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }
