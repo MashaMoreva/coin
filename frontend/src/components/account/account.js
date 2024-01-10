@@ -64,6 +64,10 @@ export function createAccount(id) {
             chartCanvas,
           ]),
         ]),
+        el("div.account-table", [
+          el("p.account-wrapper-title", "История переводов"),
+          createTransactionTable(accountDetails.transactions),
+        ]),
       ]);
       accountContainer.appendChild(detailsContainer);
 
@@ -147,4 +151,37 @@ function buildBalanceChart(canvas, transactions) {
       },
     },
   });
+}
+
+function createTransactionTable(transactions) {
+  const tableHeader = el("div.account-table-header", [
+    el("div.account-table-cell", "Счёт отправителя"),
+    el("div.account-table-cell", "Счёт получателя"),
+    el("div.account-table-cell", "Сумма"),
+    el("div.account-table-cell", "Дата"),
+  ]);
+
+  const tableRowsContainer = el("div.account-table-row-wrapper");
+
+  function updateTableRows() {
+    tableRowsContainer.textContent = "";
+
+    transactions.slice(-10).forEach((transaction) => {
+      const row = el("div.account-table-row", [
+        el("div.account-table-cell", transaction.from),
+        el("div.account-table-cell", transaction.to),
+        el("div.account-table-cell", `${transaction.amount} ₽`),
+        el(
+          "div.account-table-cell",
+          new Date(transaction.date).toLocaleDateString()
+        ),
+      ]);
+
+      tableRowsContainer.appendChild(row);
+    });
+  }
+
+  updateTableRows();
+
+  return el("div.account-table-wrapper", [tableHeader, tableRowsContainer]);
 }
