@@ -63,11 +63,20 @@ export async function createNewAccount(accountCardsContainer) {
   }
 }
 
-export async function getAccountDetails(accountId, router) {
+export async function getAccountDetails(accountId) {
   try {
     const responseData = await handleFetch(`/account/${accountId}`, "GET");
     const { payload } = responseData;
     return payload;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function handleTransfer({ from, to, amount }) {
+  try {
+    await handleFetch("/transfer-funds", "POST", { from, to, amount });
+    console.log(`Sending data: ${(from, to, amount)}`);
   } catch (error) {
     throw error;
   }
