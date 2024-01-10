@@ -66,12 +66,14 @@ export function createAccount(id, router) {
                 );
                 const amountInput = form.querySelector('input[name="amount"]');
 
-                const from = id;
-                const to = accountInput.value;
-                const amount = amountInput.value;
+                const formData = {
+                  from: id,
+                  to: accountInput.value,
+                  amount: amountInput.value,
+                };
 
                 try {
-                  await handleTransfer({ from, to, amount });
+                  await handleTransfer(formData);
                 } catch (error) {
                   console.error("Ошибка при отправке перевода:", error);
                 }
