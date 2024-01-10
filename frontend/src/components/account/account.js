@@ -6,7 +6,7 @@ import { createFieldset } from "../fieldset/fieldset";
 import Chart from "chart.js/auto";
 import { getMonthYear, getRecentMonths } from "../../helpers/getMonths";
 
-export function createAccount(id) {
+export function createAccount(id, router) {
   const accountContainer = el("div.account");
   const chartCanvas = el("canvas", {
     id: "balanceChart",
@@ -25,10 +25,11 @@ export function createAccount(id) {
             hasIcon: true,
             iconClass: "account-controls-button-icon",
             extraClass: "account-controls-button",
+            onClick: () => router.navigate("/accounts"),
           }),
         ]),
         el("div.account-details", [
-          el("p.account-details-number", `№ ${id}`),
+          el("p.account-details-number", `№ ${accountDetails.account}`),
           el("div.account-details-balance", [
             el("p.account-details-balance-subtitle", "Баланс"),
             el(
@@ -54,6 +55,7 @@ export function createAccount(id) {
             ),
             createButton({
               text: "Отправить",
+              isDisabled: true,
               hasIcon: true,
               iconClass: "account-wrapper-form-button-icon",
               extraClass: "account-wrapper-form-button",
@@ -66,7 +68,7 @@ export function createAccount(id) {
         ]),
         el("div.account-table", [
           el("p.account-wrapper-title", "История переводов"),
-          createTransactionTable(accountDetails.transactions),
+          createTransactionTable(accountDetails.transactions, id),
         ]),
       ]);
       accountContainer.appendChild(detailsContainer);
@@ -153,7 +155,7 @@ function buildBalanceChart(canvas, transactions) {
   });
 }
 
-function createTransactionTable(transactions) {
+function createTransactionTable(transactions, id) {
   const tableHeader = el("div.account-table-header", [
     el("div.account-table-cell", "Счёт отправителя"),
     el("div.account-table-cell", "Счёт получателя"),
@@ -167,17 +169,32 @@ function createTransactionTable(transactions) {
     tableRowsContainer.textContent = "";
 
     transactions.slice(-10).forEach((transaction) => {
+      const isIncoming = transaction.to === id;
+
+      // const typeClass = isIncoming ? "incoming" : "outgoing";
+      const color = isIncoming
+        ? "rgba(118, 202, 102, 1)"
+        : "rgba(253, 78, 93, 1)";
+      const sign = isIncoming ? "+" : "-";
+
       const row = el("div.account-table-row", [
         el("div.account-table-cell", transaction.from),
         el("div.account-table-cell", transaction.to),
-        el("div.account-table-cell", `${transaction.amount} ₽`),
+        el(
+          "div.account-table-cell",
+          {
+            //  class: typeClass,
+            style: `color: ${color}`,
+          },
+          `${sign} ${transaction.amount} ₽`
+        ),
         el(
           "div.account-table-cell",
           new Date(transaction.date).toLocaleDateString()
         ),
       ]);
 
-      tableRowsContainer.appendChild(row);
+      tableRowsContainer.insertBefore(row, tableRowsContainer.firstChild);
     });
   }
 
