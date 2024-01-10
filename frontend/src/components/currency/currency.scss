@@ -7,6 +7,12 @@
   &-title {
     margin-bottom: 56px;
   }
+  &-subtitle {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    margin-bottom: 25px;
+  }
   &-wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -28,15 +34,11 @@
 }
 
 .user {
+  height: 411px;
   padding: 50px;
   border-radius: 50px;
   box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.25);
-  &-subtitle {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    margin-bottom: 25px;
-  }
+
   &-currencies {
     display: flex;
     flex-direction: column;
@@ -51,5 +53,21 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 10px;
+  }
+}
+
+.rate {
+  padding: 50px;
+  border-radius: 50px;
+  background-color: $gray7;
+  &-exchange {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-height: 680px;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
   }
 }

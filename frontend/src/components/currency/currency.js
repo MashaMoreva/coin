@@ -8,6 +8,7 @@ import {
 
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
+  const exchangeRateContainer = el("div.rate-exchange");
 
   getUserCurrencies()
     .then((userCurrencies) => {
@@ -31,11 +32,33 @@ export function createCurrency() {
     el("h1.currency-title", "Валютный обмен"),
     el("div.currency-wrapper", [
       el("div.user", [
-        el("p.user-subtitle", "Ваши валюты"),
+        el("p.currency-subtitle", "Ваши валюты"),
         userCurrenciesContainer,
+      ]),
+      el("div.rate", [
+        el("p.currency-subtitle", "Изменение курсов в реальном времени"),
+        exchangeRateContainer,
       ]),
     ]),
   ]);
+
+  const currencyFeedSocket = new WebSocket("ws://localhost:3000/currency-feed");
+
+  currencyFeedSocket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.type === "EXCHANGE_RATE_CHANGE") {
+      const { from, to, rate, change } = data;
+      const arrowIcon = change === 1 ? "↑" : change === -1 ? "↓" : "";
+
+      const exchangeRateElement = el("div.exchange-rate", [
+        el("span.exchange-currency", `${from}/${to}`),
+        el("span.exchange-rate-value", `${rate} ${arrowIcon}`),
+      ]);
+
+      mount(exchangeRateContainer, exchangeRateElement);
+    }
+  };
 
   return currencyContainer;
 }
