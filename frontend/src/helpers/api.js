@@ -12,7 +12,7 @@ function getAuthorizationToken() {
   return token;
 }
 
-async function handleFetch(url, method) {
+async function handleFetch(url, method, body) {
   const token = getAuthorizationToken();
 
   try {
@@ -22,6 +22,7 @@ async function handleFetch(url, method) {
         Authorization: `Basic ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
