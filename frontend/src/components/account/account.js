@@ -20,7 +20,7 @@ export function createAccount(id, router) {
     .then((accountDetails) => {
       const detailsContainer = el("div.account", [
         el("div.account-controls", [
-          el("h1.account-controls-title", "Простосмотр счёта"),
+          el("h1.account-controls-title", "Просмотр счёта"),
           createButton({
             text: "Вернуться назад",
             hasIcon: true,
