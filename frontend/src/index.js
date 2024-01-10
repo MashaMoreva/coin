@@ -6,6 +6,7 @@ import { createLoginForm } from "./components/login/login.js";
 import { createMap } from "./components/map/map.js";
 import { createAccounts } from "./components/accounts/accounts.js";
 import { createAccount } from "./components/account/account.js";
+import { createCurrency } from "./components/currency/currency.js";
 
 const router = new Navigo(null, true, "#");
 
@@ -30,7 +31,7 @@ function checkAuthorization() {
       setChildren(mainContainer, [createAccount(params.data.id, router)]);
     })
     .on("/currency", () => {
-      setChildren(mainContainer, [el("h1", "Страница валюты")]);
+      setChildren(mainContainer, [createCurrency()]);
     })
     .on("/atm-map", () => {
       setChildren(mainContainer, [createMap()]);
