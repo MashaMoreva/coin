@@ -76,7 +76,7 @@ export async function getAccountDetails(accountId) {
 export async function handleTransfer(formData) {
   try {
     await handleFetch("/transfer-funds", "POST", formData);
-    console.log("Sending data:", formData);
+    console.log(formData);
   } catch (error) {
     throw error;
   }
