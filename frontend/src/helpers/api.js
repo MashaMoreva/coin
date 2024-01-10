@@ -1,4 +1,5 @@
 import { updateAccounts } from "../helpers/updateAccounts";
+import { createTransactionTable } from "../components/account/account";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -40,13 +41,6 @@ export async function getAccounts() {
   try {
     const responseData = await handleFetch("/accounts", "GET");
     const { payload } = responseData;
-
-    if (!payload || !Array.isArray(payload)) {
-      throw new Error(
-        "Недопустимый формат ответа: полезная нагрузка отсутствует или не является массивом"
-      );
-    }
-
     return payload;
   } catch (error) {
     throw error;
@@ -77,6 +71,38 @@ export async function getAccountDetails(accountId) {
 export async function handleTransfer(formData) {
   try {
     const response = await handleFetch("/transfer-funds", "POST", formData);
+    const updatedTransactions = response.payload.transactions;
+    createTransactionTable(updatedTransactions, formData.from);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getAllCurrencies() {
+  try {
+    const responseData = await handleFetch("/all-currencies", "GET");
+    const { payload } = responseData;
+    return payload;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserCurrencies() {
+  try {
+    const responseData = await handleFetch("/currencies", "GET");
+    const { payload } = responseData;
+    return payload;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function buyCurrency({ from, to, amount }) {
+  const formData = { from, to, amount };
+
+  try {
+    const response = await handleFetch("/currency-buy", "POST", formData);
     console.log(formData);
     return response;
   } catch (error) {
