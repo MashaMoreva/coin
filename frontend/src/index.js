@@ -27,7 +27,7 @@ function checkAuthorization() {
       setChildren(mainContainer, [createAccounts(router)]);
     })
     .on("/account/:id", (params) => {
-      setChildren(mainContainer, [createAccount(params.data.id)]);
+      setChildren(mainContainer, [createAccount(params.data.id, router)]);
     })
     .on("/currency", () => {
       setChildren(mainContainer, [el("h1", "Страница валюты")]);
