@@ -1,6 +1,6 @@
 import "./account.scss";
 import { el } from "redom";
-import { getAccountDetails } from "../../helpers/api";
+import { getAccountDetails, handleTransfer } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 import Chart from "chart.js/auto";
@@ -14,9 +14,10 @@ export function createAccount(id, router) {
     height: "200",
   });
 
+  let form;
+
   getAccountDetails(id)
     .then((accountDetails) => {
-      console.log("Транзакции:", accountDetails.transactions);
       const detailsContainer = el("div.account", [
         el("div.account-controls", [
           el("h1.account-controls-title", "Простосмотр счёта"),
@@ -39,7 +40,7 @@ export function createAccount(id, router) {
           ]),
         ]),
         el("div.account-wrapper", [
-          el("div.account-wrapper-form", [
+          (form = el("form.account-wrapper-form", [
             el("p.account-wrapper-title", "Новый перевод"),
             createFieldset(
               "Номер счёта получателя",
@@ -55,12 +56,28 @@ export function createAccount(id, router) {
             ),
             createButton({
               text: "Отправить",
-              isDisabled: true,
+              // isDisabled: true,
               hasIcon: true,
               iconClass: "account-wrapper-form-button-icon",
               extraClass: "account-wrapper-form-button",
+              onClick: async () => {
+                const accountInput = form.querySelector(
+                  'input[name="account"]'
+                );
+                const amountInput = form.querySelector('input[name="amount"]');
+
+                const from = id;
+                const to = accountInput.value;
+                const amount = amountInput.value;
+
+                try {
+                  await handleTransfer({ from, to, amount });
+                } catch (error) {
+                  console.error("Ошибка при отправке перевода:", error);
+                }
+              },
             }),
-          ]),
+          ])),
           el("div.account-wrapper-chart", [
             el("p.account-wrapper-title", "Динамика баланса"),
             chartCanvas,
@@ -101,9 +118,6 @@ function buildBalanceChart(canvas, transactions) {
   const recentMonths = getRecentMonths(allMonths, 6);
   const balances = recentMonths.map((month) => monthlySums[month]);
 
-  console.log("Months:", recentMonths);
-  console.log("Balances:", balances);
-
   const ctx = canvas.getContext("2d");
 
   const maxBalance = Math.max(...balances);
@@ -125,13 +139,6 @@ function buildBalanceChart(canvas, transactions) {
           grid: {
             display: false,
           },
-          // ticks: {
-          //   font: {
-          //     size: 20,
-          //     weight: "bold",
-          //     letterSpacing: -0.4,
-          //   },
-          // },
         },
         y: {
           position: "right",
