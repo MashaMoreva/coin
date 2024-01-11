@@ -24,7 +24,7 @@
     letter-spacing: 2px;
   }
   &-pass {
-    border-bottom: 1px dashed $black;
+    border-bottom: 2px dashed $black;
   }
   &-balance {
     font-size: 20px;
@@ -60,7 +60,7 @@
   padding: 50px;
   border-radius: 50px;
   background-color: $gray7;
-  &-exchange {
+  &-exchanges {
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -70,4 +70,45 @@
       width: 0;
     }
   }
+  &-exchange {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 10px;
+  }
+  &-currency {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  &-value {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 2px;
+  }
+  &-pass {
+    &.green {
+      border-bottom: 2px dashed $success;
+    }
+    &.red {
+      border-bottom: 2px dashed $secondary4;
+    }
+  }
+}
+
+.arrow {
+  width: 20px;
+  height: 10px;
+  margin-top: 6.5px;
+  padding: 10px;
+  background-repeat: no-repeat;
+}
+
+.arrow-red {
+  @extend .arrow;
+  background-image: url(../../assets/images/arrow-red.svg);
+}
+
+.arrow-green {
+  @extend .arrow;
+  background-image: url(../../assets/images/arrow-green.svg);
 }

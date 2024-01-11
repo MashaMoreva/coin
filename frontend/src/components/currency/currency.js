@@ -8,7 +8,7 @@ import {
 
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
-  const exchangeRateContainer = el("div.rate-exchange");
+  const exchangeRateContainer = el("div.rate-exchanges");
 
   getUserCurrencies()
     .then((userCurrencies) => {
@@ -49,14 +49,17 @@ export function createCurrency() {
 
     if (data.type === "EXCHANGE_RATE_CHANGE") {
       const { from, to, rate, change } = data;
-      const arrowIcon = change === 1 ? "↑" : change === -1 ? "↓" : "";
+      const arrowIcon =
+        change === 1 ? el("img.arrow-green") : el("img.arrow-red");
 
-      const exchangeRateElement = el("div.exchange-rate", [
-        el("span.exchange-currency", `${from}/${to}`),
-        el("span.exchange-rate-value", `${rate} ${arrowIcon}`),
+      const exchangeRateElement = el("div.rate-exchange", [
+        el("span.rate-currency", `${from}/${to}`),
+        el("span.rate-pass", { class: change === 1 ? "green" : "red" }),
+        el("span.rate-value", `${rate} `),
+        arrowIcon,
       ]);
 
-      mount(exchangeRateContainer, exchangeRateElement);
+      exchangeRateContainer.prepend(exchangeRateElement);
     }
   };
 
