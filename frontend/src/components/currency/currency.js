@@ -5,11 +5,12 @@ import {
   getAllCurrencies,
   buyCurrency,
 } from "../../helpers/api";
+import { createButton } from "../button/button";
+import { createFieldset } from "../fieldset/fieldset";
 
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
   const rateContainer = el("div.rate-exchanges");
-  const exchangeContainer = el("div.exchange-form");
 
   getUserCurrencies()
     .then((userCurrencies) => {
@@ -37,7 +38,22 @@ export function createCurrency() {
           el("p.currency-subtitle", "Ваши валюты"),
           userCurrenciesContainer,
         ]),
-        el("div.exchange", [el("p.currency-subtitle", "Обмен валюты")]),
+        el("div.exchange", [
+          el("p.currency-subtitle", "Обмен валюты"),
+          el("div.exchange-form", [
+            el("div.exchange-inputs", [
+              el("div.exchange-wrapper", [
+                createFieldset("Из", "from"),
+                createFieldset("в", "to"),
+              ]),
+              createFieldset("Сумма", "amount", "Введите сумму"),
+            ]),
+            createButton({
+              text: "Обменять",
+              extraClass: "exchange-button",
+            }),
+          ]),
+        ]),
       ]),
       el("div.rate", [
         el("p.currency-subtitle", "Изменение курсов в реальном времени"),
