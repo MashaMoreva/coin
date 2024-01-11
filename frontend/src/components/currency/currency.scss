@@ -18,6 +18,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 50px;
   }
+  &-block {
+    display: flex;
+    flex-direction: column;
+    gap: 44px;
+  }
   &-code {
     font-size: 20px;
     font-weight: 700;
@@ -33,7 +38,8 @@
   }
 }
 
-.user {
+.user,
+.exchange {
   height: 411px;
   padding: 50px;
   border-radius: 50px;
@@ -60,17 +66,18 @@
   padding: 50px;
   border-radius: 50px;
   background-color: $gray7;
+  height: 728px;
   &-exchanges {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    max-height: 680px;
+    gap: 27px;
+    height: 578px;
     overflow-y: auto;
     &::-webkit-scrollbar {
       width: 0;
     }
   }
-  &-exchange {
+  &-element {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     gap: 10px;
@@ -95,11 +102,17 @@
   }
 }
 
+.exchange {
+  height: 273px;
+  &-form {
+  }
+}
+
 .arrow {
   width: 20px;
   height: 10px;
   margin-top: 6.5px;
-  padding: 10px;
+  padding: 5px;
   background-repeat: no-repeat;
 }
 

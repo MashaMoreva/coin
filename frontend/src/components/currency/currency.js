@@ -8,7 +8,8 @@ import {
 
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
-  const exchangeRateContainer = el("div.rate-exchanges");
+  const rateContainer = el("div.rate-exchanges");
+  const exchangeContainer = el("div.exchange-form");
 
   getUserCurrencies()
     .then((userCurrencies) => {
@@ -31,13 +32,16 @@ export function createCurrency() {
   const currencyContainer = el("div.currency", [
     el("h1.currency-title", "Валютный обмен"),
     el("div.currency-wrapper", [
-      el("div.user", [
-        el("p.currency-subtitle", "Ваши валюты"),
-        userCurrenciesContainer,
+      el("div.currency-block", [
+        el("div.user", [
+          el("p.currency-subtitle", "Ваши валюты"),
+          userCurrenciesContainer,
+        ]),
+        el("div.exchange", [el("p.currency-subtitle", "Обмен валюты")]),
       ]),
       el("div.rate", [
         el("p.currency-subtitle", "Изменение курсов в реальном времени"),
-        exchangeRateContainer,
+        rateContainer,
       ]),
     ]),
   ]);
@@ -52,14 +56,14 @@ export function createCurrency() {
       const arrowIcon =
         change === 1 ? el("img.arrow-green") : el("img.arrow-red");
 
-      const exchangeRateElement = el("div.rate-exchange", [
+      const rateElement = el("div.rate-element", [
         el("span.rate-currency", `${from}/${to}`),
         el("span.rate-pass", { class: change === 1 ? "green" : "red" }),
         el("span.rate-value", `${rate} `),
         arrowIcon,
       ]);
 
-      exchangeRateContainer.prepend(exchangeRateElement);
+      rateContainer.prepend(rateElement);
     }
   };
 
