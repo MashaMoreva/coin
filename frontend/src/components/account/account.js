@@ -72,19 +72,16 @@ export function createAccount(id, router) {
                   amount: amountInput.value,
                 };
 
-                try {
-                  const response = await handleTransfer(formData);
-          
-                  console.log("Успешный запрос на перевод:", response);
-          
-                  const updatedTransactions = response.payload.transactions;
-                  console.log("Обновленные транзакции:", updatedTransactions);
-          
-                  form.reset();
-                  createTransactionTable(updatedTransactions, id);
-              } catch (error) {
-                  console.error("Ошибка при отправке перевода:", error);
-              }
+                handleTransfer(formData)
+                  .then((response) => {
+                    const updatedTransactions = response.payload.transactions;
+                    console.log("Обновленные транзакции:", updatedTransactions);
+                    form.reset();
+                    createTransactionTable(updatedTransactions, id);
+                  })
+                  .catch((error) => {
+                    console.error("Ошибка при отправке перевода:", error);
+                  });
               },
             }),
           ])),
@@ -211,7 +208,7 @@ function createTransactionTable(transactions, id) {
         ),
       ]);
 
-      tableRowsContainer.insertBefore(row, tableRowsContainer.firstChild);
+      tableRowsContainer.prepend(row);
     });
   }
 
