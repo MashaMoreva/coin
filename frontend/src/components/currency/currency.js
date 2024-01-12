@@ -13,8 +13,22 @@ function createCurrencyWrapper() {
   const exchangeWrapper = el("div.exchange-wrapper");
   getAllCurrencies()
     .then((allCurrencies) => {
-      const dropdownFrom = createDropdownSelect(allCurrencies, "Из");
-      const dropdownTo = createDropdownSelect(allCurrencies, "в");
+      const dropdownFrom = createDropdownSelect(
+        allCurrencies,
+        "Из",
+        true,
+        "",
+        "from",
+        "from"
+      );
+      const dropdownTo = createDropdownSelect(
+        allCurrencies,
+        "в",
+        true,
+        "",
+        "to",
+        "to"
+      );
 
       mount(exchangeWrapper, dropdownFrom);
       mount(exchangeWrapper, dropdownTo);
@@ -32,6 +46,30 @@ function createCurrencyWrapper() {
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
   const rateContainer = el("div.rate-exchanges");
+
+  function handleExchange() {
+    const dropdownFrom = currencyContainer.querySelector("#from");
+    const dropdownTo = currencyContainer.querySelector("#to");
+    const amountInput = currencyContainer.querySelector("[name=amount]");
+
+    const fromCurrencyCode = dropdownFrom.value;
+    const toCurrencyCode = dropdownTo.value;
+    const amount = amountInput.value;
+
+    const formData = {
+      from: fromCurrencyCode,
+      to: toCurrencyCode,
+      amount,
+    };
+
+    buyCurrency(formData)
+      .then((response) => {
+        console.log("Обмен валюты выполнен успешно:", response);
+      })
+      .catch((error) => {
+        console.error("Ошибка при обмене валюты:", error);
+      });
+  }
 
   getUserCurrencies()
     .then((userCurrencies) => {
@@ -64,11 +102,12 @@ export function createCurrency() {
           el("div.exchange-form", [
             el("div.exchange-inputs", [
               createCurrencyWrapper(),
-              createFieldset("Сумма", "amount", "Введите сумму"),
+              createFieldset("Сумма", "amount", "Введите сумму", "number"),
             ]),
             createButton({
               text: "Обменять",
               extraClass: "exchange-button",
+              onClick: handleExchange,
             }),
           ]),
         ]),
@@ -79,26 +118,6 @@ export function createCurrency() {
       ]),
     ]),
   ]);
-
-  // getAllCurrencies()
-  //   .then((allCurrencies) => {
-  //     const exchangeWrapper = el("div.exchange-wrapper", [
-  //       createDropdownSelect(allCurrencies, "Из"),
-  //       createDropdownSelect(allCurrencies, "в"),
-  //     ]);
-  //     currencyContainer
-  //       .querySelector(".exchange-inputs")
-  //       .replaceChild(
-  //         exchangeWrapper,
-  //         currencyContainer.querySelector(".exchange-wrapper")
-  //       );
-  //   })
-  //   .catch((error) => {
-  //     console.error(
-  //       "Ошибка при получении данных о валютах для обновления выпадающих списков:",
-  //       error
-  //     );
-  //   });
 
   const currencyFeedSocket = new WebSocket("ws://localhost:3000/currency-feed");
 
