@@ -78,9 +78,8 @@ export async function handleTransfer(formData) {
 
 export async function getAllCurrencies() {
   try {
-    const responseData = await handleFetch("/all-currencies", "GET");
-    const { payload } = responseData;
-    return payload;
+    const response = await handleFetch("/all-currencies", "GET");
+    return response.payload;
   } catch (error) {
     throw error;
   }
