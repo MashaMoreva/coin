@@ -3,6 +3,10 @@
 .dropdown {
   &-select {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
     &.open {
       input {
         background: url(../../assets/images/arrow-up.svg) no-repeat right 23px
@@ -10,11 +14,19 @@
       }
       ul {
         display: block;
+        z-index: 1;
       }
     }
   }
+  &-label {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.16px;
+  }
   &-input {
     width: 300px;
+    height: 44px;
     border-radius: 7px;
     border: 1px solid $primary;
     padding: 8px 16px;
