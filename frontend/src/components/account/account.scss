@@ -101,7 +101,7 @@
     &-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      padding: 20px 0 25px 0;
+      padding: 20px 50px 25px 50px;
       border-bottom: 2px solid $secondary3;
     }
     &-cell {
