@@ -47,6 +47,18 @@
   &-wrapper {
     display: flex;
     gap: 50px;
+    .dropdown-select {
+      margin-bottom: 25px;
+    }
+    .dropdown-input {
+      border: 1px solid $gray5;
+      background-color: $white;
+    }
+    .dropdown-options {
+      width: 300px;
+      left: 205px;
+      top: 47px;
+    }
     &-title {
       font-size: 20px;
       font-weight: 700;
@@ -59,6 +71,7 @@
       border-radius: 50px;
       background-color: $gray7;
       padding: 25px 50px;
+
       &-button-icon {
         background-image: url(../../assets/images/mail.svg);
         width: 24px;
