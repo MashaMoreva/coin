@@ -7,6 +7,7 @@ import {
 } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
+import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
 
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
@@ -43,8 +44,8 @@ export function createCurrency() {
           el("div.exchange-form", [
             el("div.exchange-inputs", [
               el("div.exchange-wrapper", [
-                createFieldset("Из", "from"),
-                createFieldset("в", "to"),
+                createDropdownSelect([], "Из"),
+                createDropdownSelect([], "в"),
               ]),
               createFieldset("Сумма", "amount", "Введите сумму"),
             ]),
