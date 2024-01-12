@@ -1,10 +1,16 @@
 import "./account.scss";
 import { el } from "redom";
+import * as yup from "yup";
 import { getAccountDetails, handleTransfer } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 import Chart from "chart.js/auto";
 import { getMonthYear, getRecentMonths } from "../../helpers/getMonths";
+import {
+  getFromLocalStorage,
+  saveToLocalStorage,
+} from "../../helpers/localStorage";
+import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
 
 export function createAccount(id, router) {
   const accountContainer = el("div.account");
@@ -15,6 +21,15 @@ export function createAccount(id, router) {
   });
 
   let form;
+
+  const validationSchema = yup.object().shape({
+    account: yup.string().required("Выберите счет получателя"),
+    amount: yup
+      .number()
+      .required("Введите сумму перевода")
+      .positive("Сумма должна быть положительной")
+      .min(1, "Сумма должна быть больше 0"),
+  });
 
   getAccountDetails(id)
     .then((accountDetails) => {
@@ -42,11 +57,10 @@ export function createAccount(id, router) {
         el("div.account-wrapper", [
           (form = el("form.account-wrapper-form", [
             el("p.account-wrapper-title", "Новый перевод"),
-            createFieldset(
+            createDropdownSelect(
+              getFromLocalStorage("savedAccounts") || [],
               "Номер счёта получателя",
-              "account",
-              "Введите номер счёта",
-              "number"
+              false
             ),
             createFieldset(
               "Сумма перевода",
@@ -56,15 +70,21 @@ export function createAccount(id, router) {
             ),
             createButton({
               text: "Отправить",
-              // isDisabled: true,
+              isDisabled: true,
               hasIcon: true,
               iconClass: "account-wrapper-form-button-icon",
               extraClass: "account-wrapper-form-button",
               onClick: async () => {
-                const accountInput = form.querySelector(
-                  'input[name="account"]'
-                );
+                const select = document.querySelector(".dropdown-select");
+                const accountInput = select.querySelector("input");
                 const amountInput = form.querySelector('input[name="amount"]');
+
+                const savedAccounts =
+                  getFromLocalStorage("savedAccounts") || [];
+                if (!savedAccounts.includes(accountInput.value)) {
+                  savedAccounts.push(accountInput.value);
+                }
+                saveToLocalStorage("savedAccounts", savedAccounts);
 
                 const formData = {
                   from: id,
