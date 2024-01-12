@@ -75,7 +75,6 @@ export function createAccount(id, router) {
             ),
             createButton({
               text: "Отправить",
-              isDisabled: true,
               hasIcon: true,
               iconClass: "account-wrapper-form-button-icon",
               extraClass: "account-wrapper-form-button",
