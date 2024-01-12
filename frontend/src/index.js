@@ -16,25 +16,21 @@ function checkAuthorization() {
   const route = isAuthorized ? "/accounts" : "/login";
   router.navigate(route);
 
-  const mainContainer = el("main");
-  const headerContainer = createHeader(isAuthorized, router);
-  setChildren(document.body, [headerContainer, mainContainer]);
-
   router
     .on("/login", () => {
-      setChildren(mainContainer, [createLoginForm(router)]);
+      createLoginForm(router);
     })
     .on("/accounts", () => {
-      setChildren(mainContainer, [createAccounts(router)]);
+      createAccounts(router);
     })
     .on("/account/:id", (params) => {
-      setChildren(mainContainer, [createAccount(params.data.id, router)]);
+      createAccount(params.data.id, router);
     })
     .on("/currency", () => {
-      setChildren(mainContainer, [createCurrency()]);
+      createCurrency(router);
     })
-    .on("/atm-map", () => {
-      setChildren(mainContainer, [createMap()]);
+    .on("/map", () => {
+      createMap(router);
     })
     .resolve();
 }

@@ -1,8 +1,13 @@
-import { el } from "redom";
+import { el, mount } from "redom";
 import ymaps from "ymaps";
 import "./map.scss";
+import { createHeader } from "../header/header";
 
-export function createMap() {
+export function createMap(router) {
+  const bodyContainer = document.body;
+  const header = createHeader(true, router, "/map");
+  const mainContainer = el("main");
+
   const mapContainer = el("div.map", el("h1.map-title", "Карта банкоматов"));
 
   ymaps
@@ -35,5 +40,11 @@ export function createMap() {
       console.error("Ошибка при загрузке Yandex Maps API:", error)
     );
 
-  return mapContainer;
+  bodyContainer.innerHTML = "";
+
+  mount(bodyContainer, header);
+  mount(mainContainer, mapContainer);
+  mount(bodyContainer, mainContainer);
+
+  return bodyContainer;
 }

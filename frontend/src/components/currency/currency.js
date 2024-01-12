@@ -8,6 +8,7 @@ import {
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
+import { createHeader } from "../header/header";
 
 function createCurrencyWrapper() {
   const exchangeWrapper = el("div.exchange-wrapper");
@@ -43,7 +44,11 @@ function createCurrencyWrapper() {
   return exchangeWrapper;
 }
 
-export function createCurrency() {
+export function createCurrency(router) {
+  const bodyContainer = document.body;
+  const header = createHeader(true, router, "/currency");
+  const mainContainer = el("main");
+
   const userCurrenciesContainer = el("div.user-currencies");
   const rateContainer = el("div.rate-exchanges");
 
@@ -140,5 +145,11 @@ export function createCurrency() {
     }
   };
 
-  return currencyContainer;
+  bodyContainer.innerHTML = "";
+
+  mount(bodyContainer, header);
+  mount(mainContainer, currencyContainer);
+  mount(bodyContainer, mainContainer);
+
+  return bodyContainer;
 }

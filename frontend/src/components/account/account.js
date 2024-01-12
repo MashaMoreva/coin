@@ -1,6 +1,7 @@
 import "./account.scss";
-import { el } from "redom";
+import { el, mount } from "redom";
 import * as yup from "yup";
+import { createHeader } from "../header/header";
 import { getAccountDetails, handleTransfer } from "../../helpers/api";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
@@ -13,6 +14,10 @@ import {
 import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
 
 export function createAccount(id, router) {
+  const bodyContainer = document.body;
+  const header = createHeader(true, router);
+  const mainContainer = el("main");
+
   const accountContainer = el("div.account");
   const chartCanvas = el("canvas", {
     id: "balanceChart",
@@ -124,7 +129,13 @@ export function createAccount(id, router) {
       console.error("Ошибка при получении данных:", error);
     });
 
-  return accountContainer;
+  bodyContainer.innerHTML = "";
+
+  mount(bodyContainer, header);
+  mount(mainContainer, accountContainer);
+  mount(bodyContainer, mainContainer);
+
+  return bodyContainer;
 }
 
 function buildBalanceChart(canvas, transactions) {
@@ -233,6 +244,6 @@ function createTransactionTable(transactions, id) {
   }
 
   updateTableRows();
-  console.log("createTransactionTable вызвана после успешного перевода");
+
   return el("div.account-table-wrapper", [tableHeader, tableRowsContainer]);
 }

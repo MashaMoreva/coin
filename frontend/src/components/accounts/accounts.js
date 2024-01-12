@@ -4,8 +4,13 @@ import { createAccountCard } from "./accountCard/accountCard";
 import { createButton } from "../button/button";
 import { createNewAccount, getAccounts } from "../../helpers/api";
 import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
+import { createHeader } from "../header/header";
 
 export function createAccounts(router) {
+  const bodyContainer = document.body;
+  const header = createHeader(true, router, "/accounts");
+  const mainContainer = el("main");
+
   const accountsContainer = el("div.accounts", [
     el("div.accounts-controls", [
       el("h1.accounts-controls-title", "Ваши счета"),
@@ -36,5 +41,11 @@ export function createAccounts(router) {
     });
   });
 
-  return accountsContainer;
+  bodyContainer.innerHTML = "";
+
+  mount(bodyContainer, header);
+  mount(mainContainer, accountsContainer);
+  mount(bodyContainer, mainContainer);
+
+  return bodyContainer;
 }

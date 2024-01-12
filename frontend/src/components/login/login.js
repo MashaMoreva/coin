@@ -1,10 +1,15 @@
-import { el } from "redom";
+import { el, mount } from "redom";
 import * as yup from "yup";
 import "./login.scss";
+import { createHeader } from "../header/header";
 import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 
 export function createLoginForm(router) {
+  const bodyContainer = document.body;
+  const header = createHeader(false, router);
+  const mainContainer = el("main");
+
   const validationState = {
     username: false,
     password: false,
@@ -90,7 +95,13 @@ export function createLoginForm(router) {
     }
   }
 
-  return loginContainer;
+  bodyContainer.innerHTML = "";
+
+  mount(bodyContainer, header);
+  mount(mainContainer, loginContainer);
+  mount(bodyContainer, mainContainer);
+
+  return bodyContainer;
 }
 
 function handleInputFactory(fieldName, validationState) {
