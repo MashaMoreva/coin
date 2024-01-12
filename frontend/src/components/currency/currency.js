@@ -9,6 +9,26 @@ import { createButton } from "../button/button";
 import { createFieldset } from "../fieldset/fieldset";
 import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
 
+function createCurrencyWrapper() {
+  const exchangeWrapper = el("div.exchange-wrapper");
+  getAllCurrencies()
+    .then((allCurrencies) => {
+      const dropdownFrom = createDropdownSelect(allCurrencies, "Из");
+      const dropdownTo = createDropdownSelect(allCurrencies, "в");
+
+      mount(exchangeWrapper, dropdownFrom);
+      mount(exchangeWrapper, dropdownTo);
+    })
+    .catch((error) => {
+      console.error(
+        "Ошибка при получении данных о валютах для обновления выпадающих списков:",
+        error
+      );
+    });
+
+  return exchangeWrapper;
+}
+
 export function createCurrency() {
   const userCurrenciesContainer = el("div.user-currencies");
   const rateContainer = el("div.rate-exchanges");
@@ -43,10 +63,7 @@ export function createCurrency() {
           el("p.currency-subtitle", "Обмен валюты"),
           el("div.exchange-form", [
             el("div.exchange-inputs", [
-              el("div.exchange-wrapper", [
-                createDropdownSelect([], "Из"),
-                createDropdownSelect([], "в"),
-              ]),
+              createCurrencyWrapper(),
               createFieldset("Сумма", "amount", "Введите сумму"),
             ]),
             createButton({
@@ -62,6 +79,26 @@ export function createCurrency() {
       ]),
     ]),
   ]);
+
+  // getAllCurrencies()
+  //   .then((allCurrencies) => {
+  //     const exchangeWrapper = el("div.exchange-wrapper", [
+  //       createDropdownSelect(allCurrencies, "Из"),
+  //       createDropdownSelect(allCurrencies, "в"),
+  //     ]);
+  //     currencyContainer
+  //       .querySelector(".exchange-inputs")
+  //       .replaceChild(
+  //         exchangeWrapper,
+  //         currencyContainer.querySelector(".exchange-wrapper")
+  //       );
+  //   })
+  //   .catch((error) => {
+  //     console.error(
+  //       "Ошибка при получении данных о валютах для обновления выпадающих списков:",
+  //       error
+  //     );
+  //   });
 
   const currencyFeedSocket = new WebSocket("ws://localhost:3000/currency-feed");
 
