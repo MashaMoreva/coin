@@ -25,31 +25,19 @@
     // color: $white-hover;
     // border-color: $primary-hover;
   }
-
-  &:focus,
-  &:active {
-    // background-color: $primary-pressed;
-    // color: $white-pressed;
-    // border-color: $primary-pressed;
-  }
 }
 
 .button.reversed {
-  // Стили для кнопки с обратными цветами
   color: $primary;
   background-color: $white;
   border-color: $primary;
+  transition: transform 0.3s ease;
 
   &:hover {
-    // color: $primary-hover;
-    // background-color: $white-hover;
-    // border-color: $primary-hover;
+    transform: scale(1.1);
   }
 
-  &:focus,
-  &:active {
-    // color: $primary-pressed;
-    // background-color: $white-pressed;
-    // border-color: $primary-pressed;
+  &.active {
+    background-color: $info;
   }
 }
