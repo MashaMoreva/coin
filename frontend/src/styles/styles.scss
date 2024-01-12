@@ -39,6 +39,11 @@ input {
   outline: none;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  display: none;
+}
+
 button {
   padding: 0;
   border: none;
