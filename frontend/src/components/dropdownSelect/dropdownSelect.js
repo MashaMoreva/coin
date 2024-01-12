@@ -5,7 +5,9 @@ export function createDropdownSelect(
   optionsData,
   labelText,
   readOnly = true,
-  placeholder = "Введите счёт"
+  placeholder = "Введите счёт",
+  inputId,
+  inputName
 ) {
   const defaultValue = optionsData.length > 0 ? optionsData[0] : "";
 
@@ -15,6 +17,8 @@ export function createDropdownSelect(
       value: defaultValue,
       placeholder: placeholder,
       readOnly,
+      id: inputId,
+      name: inputName,
     }),
     el("ul.dropdown-options"),
   ]);
