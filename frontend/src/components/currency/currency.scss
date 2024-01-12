@@ -116,11 +116,19 @@
   &-wrapper {
     display: flex;
     gap: 20px;
-    .fieldset {
+    .dropdown {
       margin: 0;
     }
-    .fieldset-input {
+    .dropdown-input {
+      border-color: $gray5;
       width: 143px;
+    }
+    .dropdown-options {
+      width: 142px;
+      top: 47px;
+      left: 38px;
+      max-height: 165px;
+      overflow-y: auto;
     }
   }
   &-button {
