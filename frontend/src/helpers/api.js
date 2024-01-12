@@ -1,5 +1,4 @@
 import { updateAccounts } from "../helpers/updateAccounts";
-import { createTransactionTable } from "../components/account/account";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -71,8 +70,7 @@ export async function getAccountDetails(accountId) {
 export async function handleTransfer(formData) {
   try {
     const response = await handleFetch("/transfer-funds", "POST", formData);
-    const updatedTransactions = response.payload.transactions;
-    createTransactionTable(updatedTransactions, formData.from);
+    return response;
   } catch (error) {
     throw error;
   }
