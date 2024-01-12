@@ -95,9 +95,7 @@ export async function getUserCurrencies() {
   }
 }
 
-export async function buyCurrency({ from, to, amount }) {
-  const formData = { from, to, amount };
-
+export async function buyCurrency(formData) {
   try {
     const response = await handleFetch("/currency-buy", "POST", formData);
     console.log(formData);
