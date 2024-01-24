@@ -52,6 +52,8 @@ export function createCurrency(router) {
   const userCurrenciesContainer = el("div.user-currencies");
   const rateContainer = el("div.rate-exchanges");
 
+  let errorContainer = el("div.error-message");
+
   function handleExchange() {
     const dropdownFrom = currencyContainer.querySelector("#from");
     const dropdownTo = currencyContainer.querySelector("#to");
@@ -61,38 +63,54 @@ export function createCurrency(router) {
     const toCurrencyCode = dropdownTo.value;
     const amount = amountInput.value;
 
+    if (isNaN(amount) || amount <= 0) {
+      errorContainer.textContent = "Сумма перевода должна быть больше нуля";
+      return;
+    }
+
     const formData = {
       from: fromCurrencyCode,
       to: toCurrencyCode,
       amount,
     };
 
+    errorContainer.textContent = "";
+
     buyCurrency(formData)
       .then((response) => {
         console.log("Обмен валюты выполнен успешно:", response);
+        updateUserCurrencies();
+        amountInput.value = "";
       })
       .catch((error) => {
+        errorContainer.textContent = `Ошибка при обмене валюты: ${error.message}`;
         console.error("Ошибка при обмене валюты:", error);
       });
   }
 
-  getUserCurrencies()
-    .then((userCurrencies) => {
-      for (const currencyCode in userCurrencies) {
-        const currencyBalance = userCurrencies[currencyCode].amount;
+  function updateUserCurrencies() {
+    userCurrenciesContainer.innerHTML = "";
 
-        const currencyElement = el("div.user-currency", [
-          el("span.currency-code", currencyCode),
-          el("span.currency-pass"),
-          el("span.currency-balance", currencyBalance),
-        ]);
+    getUserCurrencies()
+      .then((userCurrencies) => {
+        for (const currencyCode in userCurrencies) {
+          const currencyBalance = userCurrencies[currencyCode].amount;
 
-        mount(userCurrenciesContainer, currencyElement);
-      }
-    })
-    .catch((error) => {
-      console.error("Ошибка при получении данных о валютах:", error);
-    });
+          const currencyElement = el("div.user-currency", [
+            el("span.currency-code", currencyCode),
+            el("span.currency-pass"),
+            el("span.currency-balance", currencyBalance),
+          ]);
+
+          mount(userCurrenciesContainer, currencyElement);
+        }
+      })
+      .catch((error) => {
+        console.error("Ошибка при получении данных о валютах:", error);
+      });
+  }
+
+  updateUserCurrencies();
 
   const currencyContainer = el("div.currency", [
     el("h1.currency-title", "Валютный обмен"),
@@ -104,7 +122,8 @@ export function createCurrency(router) {
         ]),
         el("div.exchange", [
           el("p.currency-subtitle", "Обмен валюты"),
-          el("div.exchange-form", [
+          errorContainer,
+          el("form.exchange-form", [
             el("div.exchange-inputs", [
               createCurrencyWrapper(),
               createFieldset("Сумма", "amount", "Введите сумму", "number"),
