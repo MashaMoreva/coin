@@ -1,6 +1,5 @@
 import "./account.scss";
 import { el, mount } from "redom";
-import * as yup from "yup";
 import { createHeader } from "../header/header";
 import { getAccountDetails, handleTransfer } from "../../helpers/api";
 import { createButton } from "../button/button";
@@ -26,15 +25,7 @@ export function createAccount(id, router) {
   });
 
   let form;
-
-  const validationSchema = yup.object().shape({
-    account: yup.string().required("Выберите счет получателя"),
-    amount: yup
-      .number()
-      .required("Введите сумму перевода")
-      .positive("Сумма должна быть положительной")
-      .min(1, "Сумма должна быть больше 0"),
-  });
+  let errorContainer;
 
   getAccountDetails(id)
     .then((accountDetails) => {
@@ -62,6 +53,7 @@ export function createAccount(id, router) {
         el("div.account-wrapper", [
           (form = el("form.account-wrapper-form", [
             el("p.account-wrapper-title", "Новый перевод"),
+            (errorContainer = el("div.error-message")),
             createDropdownSelect(
               getFromLocalStorage("savedAccounts") || [],
               "Номер счёта получателя",
@@ -83,26 +75,40 @@ export function createAccount(id, router) {
                 const accountInput = select.querySelector("input");
                 const amountInput = form.querySelector('input[name="amount"]');
 
+                if (!accountInput.value) {
+                  errorContainer.textContent = "Выберите счет получателя";
+                  return;
+                }
+
+                const amountValue = parseFloat(amountInput.value);
+
+                if (isNaN(amountValue) || amountValue <= 0) {
+                  errorContainer.textContent =
+                    "Сумма перевода должна быть больше нуля";
+                  return;
+                }
+
                 const savedAccounts =
                   getFromLocalStorage("savedAccounts") || [];
                 if (!savedAccounts.includes(accountInput.value)) {
                   savedAccounts.push(accountInput.value);
                 }
-                saveToLocalStorage("savedAccounts", savedAccounts);
 
                 const formData = {
                   from: id,
                   to: accountInput.value,
-                  amount: amountInput.value,
+                  amount: amountValue,
                 };
 
-                handleTransfer(formData)
-                  .then(() => {
-                    createAccount(id, router);
-                  })
-                  .catch((error) => {
-                    console.error("Ошибка при отправке перевода:", error);
-                  });
+                try {
+                  errorContainer.textContent = "";
+                  await handleTransfer(formData);
+                  saveToLocalStorage("savedAccounts", savedAccounts);
+                  createAccount(id, router);
+                } catch (error) {
+                  errorContainer.textContent = `Ошибка при отправке перевода: ${error.message}`;
+                  console.error("Ошибка при отправке перевода:", error);
+                }
               },
             }),
           ])),
