@@ -24,7 +24,7 @@ export function createAccounts(router) {
         hasIcon: true,
         iconClass: "accounts-controls-button-icon",
         extraClass: "accounts-controls-button",
-        onClick: () => createNewAccount(accountCardsContainer),
+        onClick: () => createNewAccount(accountCardsContainer, router),
       }),
     ]),
     el("div.accounts-container"),

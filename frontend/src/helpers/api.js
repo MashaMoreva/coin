@@ -46,12 +46,11 @@ export async function getAccounts() {
   }
 }
 
-export async function createNewAccount(accountCardsContainer) {
+export async function createNewAccount(accountCardsContainer, router) {
   try {
     await handleFetch("/create-account", "POST");
-
     const userAccounts = await getAccounts();
-    updateAccounts(userAccounts, accountCardsContainer);
+    updateAccounts(userAccounts, accountCardsContainer, router);
   } catch (error) {
     throw error;
   }
