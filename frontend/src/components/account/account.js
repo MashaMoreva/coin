@@ -53,7 +53,7 @@ export function createAccount(id, router) {
         el("div.account-wrapper", [
           (form = el("form.account-wrapper-form", [
             el("p.account-wrapper-title", "Новый перевод"),
-            (errorContainer = el("div.error-message")),
+            (errorContainer = el("div.account-error-message")),
             createDropdownSelect(
               getFromLocalStorage("savedAccounts") || [],
               "Номер счёта получателя",

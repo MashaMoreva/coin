@@ -123,13 +123,12 @@
       text-align: center;
     }
   }
-}
-
-.error-message {
-  position: absolute;
-  top: 50px;
-  left: 50px;
-  font-size: 13px;
-  font-weight: 500;
-  color: $error;
+  &-error-message {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    color: $error;
+  }
 }
