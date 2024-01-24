@@ -97,11 +97,8 @@ export function createAccount(id, router) {
                 };
 
                 handleTransfer(formData)
-                  .then((response) => {
-                    const updatedTransactions = response.payload.transactions;
-                    console.log("Обновленные транзакции:", updatedTransactions);
-                    form.reset();
-                    createTransactionTable(updatedTransactions, id);
+                  .then(() => {
+                    createAccount(id, router);
                   })
                   .catch((error) => {
                     console.error("Ошибка при отправке перевода:", error);
@@ -215,7 +212,6 @@ function createTransactionTable(transactions, id) {
     transactions.slice(-10).forEach((transaction) => {
       const isIncoming = transaction.to === id;
 
-      // const typeClass = isIncoming ? "incoming" : "outgoing";
       const color = isIncoming
         ? "rgba(118, 202, 102, 1)"
         : "rgba(253, 78, 93, 1)";
@@ -227,7 +223,6 @@ function createTransactionTable(transactions, id) {
         el(
           "div.account-table-cell",
           {
-            //  class: typeClass,
             style: `color: ${color}`,
           },
           `${sign} ${transaction.amount} ₽`
