@@ -1,7 +1,6 @@
 import { el, setChildren } from "redom";
 import Navigo from "navigo";
 import "./styles/styles.scss";
-import { createHeader } from "./components/header/header.js";
 import { createLoginForm } from "./components/login/login.js";
 import { createMap } from "./components/map/map.js";
 import { createAccounts } from "./components/accounts/accounts.js";
@@ -13,24 +12,42 @@ const router = new Navigo(null, true, "#");
 function checkAuthorization() {
   const token = localStorage.getItem("token");
   const isAuthorized = !!token;
-  const route = isAuthorized ? "/accounts" : "/login";
-  router.navigate(route);
 
   router
     .on("/login", () => {
-      createLoginForm(router);
+      if (!isAuthorized) {
+        createLoginForm(router);
+      } else {
+        router.navigate("/accounts");
+      }
     })
     .on("/accounts", () => {
-      createAccounts(router);
+      if (isAuthorized) {
+        createAccounts(router);
+      } else {
+        router.navigate("/login");
+      }
     })
     .on("/account/:id", (params) => {
-      createAccount(params.data.id, router);
+      if (isAuthorized) {
+        createAccount(params.data.id, router);
+      } else {
+        router.navigate("/login");
+      }
     })
     .on("/currency", () => {
-      createCurrency(router);
+      if (isAuthorized) {
+        createCurrency(router);
+      } else {
+        router.navigate("/login");
+      }
     })
     .on("/map", () => {
-      createMap(router);
+      if (isAuthorized) {
+        createMap(router);
+      } else {
+        router.navigate("/login");
+      }
     })
     .resolve();
 }
