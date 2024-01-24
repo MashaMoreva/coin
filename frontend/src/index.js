@@ -8,10 +8,11 @@ import { createAccount } from "./components/account/account.js";
 import { createCurrency } from "./components/currency/currency.js";
 
 const router = new Navigo(null, true, "#");
+let isAuthorized = false;
 
 function checkAuthorization() {
   const token = localStorage.getItem("token");
-  const isAuthorized = !!token;
+  isAuthorized = !!token;
 
   router
     .on("/login", () => {
