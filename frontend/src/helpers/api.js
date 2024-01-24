@@ -29,7 +29,13 @@ async function handleFetch(url, method, body) {
       throw new Error(`Запрос не выполнен: ${response.status}`);
     }
 
-    return response.json();
+    const responseData = await response.json();
+
+    if (responseData.error !== "") {
+      throw new Error(responseData.error);
+    }
+
+    return responseData;
   } catch (error) {
     console.error(`Ошибка в ${method} при запросе к ${url}:`, error.message);
     throw error;
