@@ -40,6 +40,7 @@
 
 .user,
 .exchange {
+  position: relative;
   height: 411px;
   padding: 50px;
   border-radius: 50px;
@@ -153,4 +154,13 @@
 .arrow-green {
   @extend .arrow;
   background-image: url(../../assets/images/arrow-green.svg);
+}
+
+.error-message {
+  position: absolute;
+  top: 75px;
+  left: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  color: $error;
 }
