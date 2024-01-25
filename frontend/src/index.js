@@ -7,46 +7,42 @@ import { createAccounts } from "./components/accounts/accounts.js";
 import { createAccount } from "./components/account/account.js";
 import { createCurrency } from "./components/currency/currency.js";
 
-const router = new Navigo(null, true, "#");
+const router = new Navigo("/");
 
-function checkAuthorization() {
-  router
-    .on("/login", () => {
-      if (!localStorage.getItem("token")) {
-        createLoginForm(router);
-      } else {
-        router.navigate("/accounts");
-      }
-    })
-    .on("/accounts", () => {
-      if (!!localStorage.getItem("token")) {
-        createAccounts(router);
-      } else {
-        router.navigate("/login");
-      }
-    })
-    .on("/account/:id", (params) => {
-      if (localStorage.getItem("token")) {
-        createAccount(params.data.id, router);
-      } else {
-        router.navigate("/login");
-      }
-    })
-    .on("/currency", () => {
-      if (localStorage.getItem("token")) {
-        createCurrency(router);
-      } else {
-        router.navigate("/login");
-      }
-    })
-    .on("/map", () => {
-      if (localStorage.getItem("token")) {
-        createMap(router);
-      } else {
-        router.navigate("/login");
-      }
-    })
-    .resolve();
-}
-
-checkAuthorization();
+router
+  .on("/", () => {
+    if (!localStorage.getItem("token")) {
+      createLoginForm(router);
+    } else {
+      router.navigate("/accounts");
+    }
+  })
+  .on("/accounts", () => {
+    if (!!localStorage.getItem("token")) {
+      createAccounts(router);
+    } else {
+      router.navigate("/login");
+    }
+  })
+  .on("/account/:id", (params) => {
+    if (localStorage.getItem("token")) {
+      createAccount(params.data.id, router);
+    } else {
+      router.navigate("/login");
+    }
+  })
+  .on("/currency", () => {
+    if (localStorage.getItem("token")) {
+      createCurrency(router);
+    } else {
+      router.navigate("/login");
+    }
+  })
+  .on("/map", () => {
+    if (localStorage.getItem("token")) {
+      createMap(router);
+    } else {
+      router.navigate("/login");
+    }
+  })
+  .resolve();

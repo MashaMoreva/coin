@@ -37,7 +37,7 @@ export function createHeader(isAuthorized, router, currentPath) {
 
   function handleLogout() {
     localStorage.removeItem("token");
-    router.navigate("/login");
+    router.navigate("/");
   }
 
   return el("header.header", [
