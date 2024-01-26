@@ -158,21 +158,16 @@ function buildTransactionChart(canvas, transactions, id) {
     const yearMonth = getMonthYear(date);
 
     if (!acc[yearMonth]) {
-      acc[yearMonth] = { total: 0, income: 0, expense: 0, transactions: [] };
+      acc[yearMonth] = { income: 0, expense: 0 };
     }
 
-    acc[yearMonth].total += parseFloat(transaction.amount);
+    const amount = parseFloat(transaction.amount);
 
-    const isIncoming = transaction.to === id;
-
-    if (isIncoming) {
-      acc[yearMonth].income += parseFloat(transaction.amount);
+    if (transaction.to === id) {
+      acc[yearMonth].income += amount;
     } else {
-      acc[yearMonth].expense += parseFloat(transaction.amount);
+      acc[yearMonth].expense += amount;
     }
-
-    transaction.isIncoming = isIncoming;
-    acc[yearMonth].transactions.push(transaction);
 
     return acc;
   }, {});
@@ -180,33 +175,32 @@ function buildTransactionChart(canvas, transactions, id) {
   const allMonths = Object.keys(monthlySums);
   const recentMonths = getRecentMonths(allMonths, 12);
 
-  const incomePercentages = recentMonths.map(
-    (month) => (monthlySums[month].income / monthlySums[month].total) * 100
-  );
-  const expensePercentages = recentMonths.map(
-    (month) => (monthlySums[month].expense / monthlySums[month].total) * 100
-  );
+  const data = recentMonths.map((month) => {
+    const income = monthlySums[month].income;
+    const expense = monthlySums[month].expense;
+
+    return {
+      month,
+      income,
+      expense,
+    };
+  });
 
   const ctx = canvas.getContext("2d");
-
-  const maxPercentage = Math.max(
-    Math.max(...incomePercentages),
-    Math.max(...expensePercentages)
-  );
 
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: recentMonths,
+      labels: data.map((entry) => entry.month),
       datasets: [
         {
           label: "Доход",
-          data: incomePercentages,
+          data: data.map((entry) => entry.income),
           backgroundColor: "rgba(118, 202, 102, 1)",
         },
         {
           label: "Расход",
-          data: expensePercentages,
+          data: data.map((entry) => entry.expense),
           backgroundColor: "rgba(253, 78, 93, 1)",
         },
       ],
@@ -220,14 +214,14 @@ function buildTransactionChart(canvas, transactions, id) {
         },
         y: {
           position: "right",
-          min: 0,
-          max: maxPercentage,
           beginAtZero: true,
           grid: {
             display: false,
           },
           ticks: {
-            stepSize: maxPercentage,
+            callback: function (value, index, values) {
+              return Math.abs(value);
+            },
           },
         },
       },
