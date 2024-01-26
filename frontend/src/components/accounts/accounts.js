@@ -11,14 +11,22 @@ export function createAccounts(router) {
   const header = createHeader(true, router, "/accounts");
   const mainContainer = el("main");
 
+  let currentSortOrder = "По номеру";
+
+  const sortOptions = ["По номеру", "По балансу", "По последней транзакции"];
+  const sortSelect = createDropdownSelect(
+    sortOptions,
+    "",
+    true,
+    "Выберите тип сортировки",
+    "sortSelect",
+    "sortSelect"
+  );
+
   const accountsContainer = el("div.accounts", [
     el("div.accounts-controls", [
       el("h1.accounts-controls-title", "Ваши счета"),
-      createDropdownSelect([
-        "По номеру",
-        "По балансу",
-        "По последней транзакции",
-      ]),
+      sortSelect,
       createButton({
         text: "Создать новый счёт",
         hasIcon: true,
@@ -34,18 +42,53 @@ export function createAccounts(router) {
     ".accounts-container"
   );
 
+  const inputElement = sortSelect.querySelector(".dropdown-input");
+
+  console.log("Input Element:", inputElement);
+  inputElement.addEventListener("input", () => {
+    console.log("Input event:", inputElement.value);
+    currentSortOrder = inputElement.value;
+    sortAndRenderAccounts(currentSortOrder);
+  });
+
   getAccounts().then((userAccounts) => {
-    userAccounts.forEach((account) => {
-      const accountCard = createAccountCard(account, router);
-      mount(accountCardsContainer, accountCard);
-    });
+    sortAndRenderAccounts(currentSortOrder, userAccounts);
   });
 
   bodyContainer.innerHTML = "";
-
   mount(bodyContainer, header);
   mount(mainContainer, accountsContainer);
   mount(bodyContainer, mainContainer);
+
+  function sortAndRenderAccounts(sortOrder) {
+    console.log("Сортировка и отрисовка счетов:", sortOrder);
+    getAccounts().then((userAccounts) => {
+      const sortedAccounts = sortAccounts(userAccounts, sortOrder);
+      console.log("Отсортированные счета:", sortedAccounts);
+      renderAccounts(sortedAccounts);
+    });
+  }
+
+  function sortAccounts(accounts, sortOrder) {
+    switch (sortOrder) {
+      case "По номеру":
+        return accounts.sort((a, b) => a.account.localeCompare(b.account));
+      case "По балансу":
+        return accounts.sort((a, b) => a.balance - b.balance);
+      case "По последней транзакции":
+        return accounts;
+      default:
+        return accounts;
+    }
+  }
+
+  function renderAccounts(accounts) {
+    accountCardsContainer.innerHTML = "";
+    accounts.forEach((account) => {
+      const accountCard = createAccountCard(account, router);
+      mount(accountCardsContainer, accountCard);
+    });
+  }
 
   return bodyContainer;
 }
