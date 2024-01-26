@@ -6,6 +6,7 @@ import { createMap } from "./components/map/map.js";
 import { createAccounts } from "./components/accounts/accounts.js";
 import { createAccount } from "./components/account/account.js";
 import { createCurrency } from "./components/currency/currency.js";
+import { createAccountHistory } from "./components/account/accountHistory/accountHistory.js";
 
 const router = new Navigo("/");
 
@@ -31,6 +32,14 @@ router
       router.navigate("/");
     }
   })
+  .on("/account-history/:id", (params) => {
+    if (localStorage.getItem("token")) {
+      createAccountHistory(params.data.id, router);
+    } else {
+      router.navigate("/");
+    }
+  })
+
   .on("/currency", () => {
     if (localStorage.getItem("token")) {
       createCurrency(router);

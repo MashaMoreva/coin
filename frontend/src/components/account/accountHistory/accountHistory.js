@@ -1,18 +1,12 @@
-import "./account.scss";
+import "./accountHistory.scss";
 import { el, mount } from "redom";
-import { createHeader } from "../header/header";
-import { getAccountDetails, handleTransfer } from "../../helpers/api";
-import { createButton } from "../button/button";
-import { createFieldset } from "../fieldset/fieldset";
+import { createHeader } from "../../header/header";
+import { getAccountDetails } from "../../../helpers/api";
+import { createButton } from "../../button/button";
 import Chart from "chart.js/auto";
-import { getMonthYear, getRecentMonths } from "../../helpers/getMonths";
-import {
-  getFromLocalStorage,
-  saveToLocalStorage,
-} from "../../helpers/localStorage";
-import { createDropdownSelect } from "../dropdownSelect/dropdownSelect";
+import { getMonthYear, getRecentMonths } from "../../../helpers/getMonths";
 
-export function createAccount(id, router) {
+export function createAccountHistory(id, router) {
   const bodyContainer = document.body;
   const header = createHeader(true, router);
   const mainContainer = el("main");
@@ -20,24 +14,27 @@ export function createAccount(id, router) {
   const accountContainer = el("div.account");
   const chartCanvas = el("canvas", {
     id: "balanceChart",
-    width: "584",
-    height: "200",
+    width: "1000",
+    height: "165",
   });
 
-  let form;
-  let errorContainer;
+  const chartCanvas2 = el("canvas", {
+    id: "transactionChart",
+    width: "1000",
+    height: "165",
+  });
 
   getAccountDetails(id)
     .then((accountDetails) => {
       const detailsContainer = el("div.account", [
         el("div.account-controls", [
-          el("h1.account-controls-title", "Просмотр счёта"),
+          el("h1.account-controls-title", "История баланса"),
           createButton({
             text: "Вернуться назад",
             hasIcon: true,
             iconClass: "account-controls-button-icon",
             extraClass: "account-controls-button",
-            onClick: () => router.navigate("/accounts"),
+            onClick: () => router.navigate(`/account/${id}`),
           }),
         ]),
         el("div.account-details", [
@@ -50,71 +47,19 @@ export function createAccount(id, router) {
             ),
           ]),
         ]),
-        el("div.account-wrapper", [
-          (form = el("form.account-wrapper-form", [
-            el("p.account-wrapper-title", "Новый перевод"),
-            (errorContainer = el("div.account-error-message")),
-            createDropdownSelect(
-              getFromLocalStorage("savedAccounts") || [],
-              "Номер счёта получателя",
-              false
-            ),
-            createFieldset(
-              "Сумма перевода",
-              "amount",
-              "Введите сумму",
-              "number"
-            ),
-            createButton({
-              text: "Отправить",
-              hasIcon: true,
-              iconClass: "account-wrapper-form-button-icon",
-              extraClass: "account-wrapper-form-button",
-              onClick: async () => {
-                const select = document.querySelector(".dropdown-select");
-                const accountInput = select.querySelector("input");
-                const amountInput = form.querySelector('input[name="amount"]');
-
-                if (!accountInput.value) {
-                  errorContainer.textContent = "Выберите счет получателя";
-                  return;
-                }
-
-                const amountValue = parseFloat(amountInput.value);
-
-                if (isNaN(amountValue) || amountValue <= 0) {
-                  errorContainer.textContent =
-                    "Сумма перевода должна быть больше нуля";
-                  return;
-                }
-
-                const savedAccounts =
-                  getFromLocalStorage("savedAccounts") || [];
-                if (!savedAccounts.includes(accountInput.value)) {
-                  savedAccounts.push(accountInput.value);
-                }
-
-                const formData = {
-                  from: id,
-                  to: accountInput.value,
-                  amount: amountValue,
-                };
-
-                try {
-                  errorContainer.textContent = "";
-                  await handleTransfer(formData);
-                  saveToLocalStorage("savedAccounts", savedAccounts);
-                  createAccount(id, router);
-                } catch (error) {
-                  errorContainer.textContent = `Ошибка при отправке перевода: ${error.message}`;
-                  console.error("Ошибка при отправке перевода:", error);
-                }
-              },
-            }),
-          ])),
-          el("div.account-wrapper-chart", [
-            el("p.account-wrapper-title", "Динамика баланса"),
+        el("div.history-wrapper", [
+          el("div.history-wrapper-chart", [
+            el("p.history-wrapper-title", "Динамика баланса"),
             chartCanvas,
+          ]),
+        ]),
+        el("div.history-wrapper", [
+          el("div.history-wrapper-chart", [
+            el(
+              "p.history-wrapper-title",
+              "Соотношение входящих исходящих транзакций"
+            ),
+            chartCanvas2,
           ]),
         ]),
         el("div.account-table", [
@@ -125,12 +70,12 @@ export function createAccount(id, router) {
       accountContainer.appendChild(detailsContainer);
 
       buildBalanceChart(chartCanvas, accountDetails.transactions);
+      buildTransactionChart(chartCanvas2, accountDetails.transactions, id);
 
       chartCanvas.addEventListener("click", () => {
         router.navigate(`/account-history/${id}`);
       });
     })
-
     .catch((error) => {
       console.error("Ошибка при получении данных:", error);
     });
@@ -159,7 +104,7 @@ function buildBalanceChart(canvas, transactions) {
   }, {});
 
   const allMonths = Object.keys(monthlySums);
-  const recentMonths = getRecentMonths(allMonths, 6);
+  const recentMonths = getRecentMonths(allMonths, 12);
   const balances = recentMonths.map((month) => monthlySums[month]);
 
   const ctx = canvas.getContext("2d");
@@ -172,6 +117,7 @@ function buildBalanceChart(canvas, transactions) {
       labels: recentMonths,
       datasets: [
         {
+          label: "Баланс",
           data: balances,
           backgroundColor: "rgba(17, 106, 204, 1)",
         },
@@ -200,6 +146,94 @@ function buildBalanceChart(canvas, transactions) {
       plugins: {
         legend: {
           display: false,
+        },
+      },
+    },
+  });
+}
+
+function buildTransactionChart(canvas, transactions, id) {
+  const monthlySums = transactions.reduce((acc, transaction) => {
+    const date = new Date(transaction.date);
+    const yearMonth = getMonthYear(date);
+
+    if (!acc[yearMonth]) {
+      acc[yearMonth] = { total: 0, income: 0, expense: 0, transactions: [] };
+    }
+
+    acc[yearMonth].total += parseFloat(transaction.amount);
+
+    const isIncoming = transaction.to === id;
+
+    if (isIncoming) {
+      acc[yearMonth].income += parseFloat(transaction.amount);
+    } else {
+      acc[yearMonth].expense += parseFloat(transaction.amount);
+    }
+
+    transaction.isIncoming = isIncoming;
+    acc[yearMonth].transactions.push(transaction);
+
+    return acc;
+  }, {});
+
+  const allMonths = Object.keys(monthlySums);
+  const recentMonths = getRecentMonths(allMonths, 12);
+
+  const incomePercentages = recentMonths.map(
+    (month) => (monthlySums[month].income / monthlySums[month].total) * 100
+  );
+  const expensePercentages = recentMonths.map(
+    (month) => (monthlySums[month].expense / monthlySums[month].total) * 100
+  );
+
+  const ctx = canvas.getContext("2d");
+
+  const maxPercentage = Math.max(
+    Math.max(...incomePercentages),
+    Math.max(...expensePercentages)
+  );
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: recentMonths,
+      datasets: [
+        {
+          label: "Доход",
+          data: incomePercentages,
+          backgroundColor: "rgba(118, 202, 102, 1)",
+        },
+        {
+          label: "Расход",
+          data: expensePercentages,
+          backgroundColor: "rgba(253, 78, 93, 1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        x: {
+          grid: {
+            display: false,
+          },
+        },
+        y: {
+          position: "right",
+          min: 0,
+          max: maxPercentage,
+          beginAtZero: true,
+          grid: {
+            display: false,
+          },
+          ticks: {
+            stepSize: maxPercentage,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: true,
         },
       },
     },
