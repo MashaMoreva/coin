@@ -30,6 +30,12 @@ export function createDropdownSelect(
     select.classList.toggle("open");
   }
 
+  function closeOptionsIfClickedOutside(event) {
+    if (!select.contains(event.target)) {
+      select.classList.remove("open");
+    }
+  }
+
   optionsData.forEach((option, index) => {
     const optionElement = el("li.dropdown-option", option);
     selectOptions.appendChild(optionElement);
@@ -50,6 +56,7 @@ export function createDropdownSelect(
   });
 
   select.addEventListener("click", toggleOptions);
+  document.addEventListener("click", closeOptionsIfClickedOutside);
 
   return select;
 }
