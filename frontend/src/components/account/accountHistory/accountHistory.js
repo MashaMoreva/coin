@@ -188,50 +188,62 @@ function buildTransactionChart(canvas, transactions, id) {
 
   const ctx = canvas.getContext("2d");
 
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: data.map((entry) => entry.month),
-      datasets: [
-        {
-          label: "Доход",
-          data: data.map((entry) => entry.income),
-          backgroundColor: "rgba(118, 202, 102, 1)",
-        },
-        {
-          label: "Расход",
-          data: data.map((entry) => entry.expense),
-          backgroundColor: "rgba(253, 78, 93, 1)",
-        },
-      ],
-    },
-    options: {
-      scales: {
-        x: {
-          grid: {
-            display: false,
+  const maxIncome = Math.ceil(Math.max(...data.map((entry) => entry.income)));
+  const maxExpense = Math.ceil(Math.max(...data.map((entry) => entry.expense)));
+  const maxTotal = Math.max(maxIncome, maxExpense);
+  const minTotal = Math.min(0, maxTotal);
+
+  if (ctx) {
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: data.map((entry) => entry.month),
+        datasets: [
+          {
+            label: "Доход",
+            data: data.map((entry) => entry.income),
+            backgroundColor: "rgba(118, 202, 102, 1)",
           },
-        },
-        y: {
-          position: "right",
-          beginAtZero: true,
-          grid: {
-            display: false,
+          {
+            label: "Расход",
+            data: data.map((entry) => entry.expense),
+            backgroundColor: "rgba(253, 78, 93, 1)",
           },
-          ticks: {
-            callback: function (value, index, values) {
-              return Math.abs(value);
+        ],
+      },
+      options: {
+        scales: {
+          x: {
+            grid: {
+              display: false,
+            },
+          },
+          y: {
+            position: "right",
+            min: minTotal,
+            max: maxTotal,
+            beginAtZero: true,
+            grid: {
+              display: false,
+            },
+            ticks: {
+              callback: function (value) {
+                return Math.abs(value);
+              },
+              stepSize: (maxTotal - minTotal) / 2,
             },
           },
         },
-      },
-      plugins: {
-        legend: {
-          display: true,
+        plugins: {
+          legend: {
+            display: false,
+          },
         },
       },
-    },
-  });
+    });
+  } else {
+    console.error("Не удалось получить контекст холста");
+  }
 }
 
 function createTransactionTable(transactions, id) {
