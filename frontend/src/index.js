@@ -21,28 +21,35 @@ router
     if (!!localStorage.getItem("token")) {
       createAccounts(router);
     } else {
-      router.navigate("/login");
+      router.navigate("/");
     }
   })
   .on("/account/:id", (params) => {
     if (localStorage.getItem("token")) {
       createAccount(params.data.id, router);
     } else {
-      router.navigate("/login");
+      router.navigate("/");
     }
   })
   .on("/currency", () => {
     if (localStorage.getItem("token")) {
       createCurrency(router);
     } else {
-      router.navigate("/login");
+      router.navigate("/");
     }
   })
   .on("/map", () => {
     if (localStorage.getItem("token")) {
       createMap(router);
     } else {
-      router.navigate("/login");
+      router.navigate("/");
+    }
+  })
+  .notFound(() => {
+    if (!localStorage.getItem("token")) {
+      createLoginForm(router);
+    } else {
+      router.navigate("/accounts");
     }
   })
   .resolve();
