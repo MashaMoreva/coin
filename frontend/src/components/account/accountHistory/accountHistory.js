@@ -71,10 +71,6 @@ export function createAccountHistory(id, router) {
 
       buildBalanceChart(chartCanvas, accountDetails.transactions);
       buildTransactionChart(chartCanvas2, accountDetails.transactions, id);
-
-      chartCanvas.addEventListener("click", () => {
-        router.navigate(`/account-history/${id}`);
-      });
     })
     .catch((error) => {
       console.error("Ошибка при получении данных:", error);
@@ -255,11 +251,18 @@ function createTransactionTable(transactions, id) {
   ]);
 
   const tableRowsContainer = el("div.account-table-row-wrapper");
+  const paginationControls = el("div.pagination-controls");
 
-  function updateTableRows() {
+  function updateTableRows(pageNumber, pageSize) {
     tableRowsContainer.textContent = "";
 
-    transactions.slice(-10).forEach((transaction) => {
+    const startIndex = (pageNumber - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const displayedTransactions = transactions
+      .slice(startIndex, endIndex)
+      .reverse();
+
+    displayedTransactions.forEach((transaction) => {
       const isIncoming = transaction.to === id;
 
       const color = isIncoming
@@ -285,9 +288,31 @@ function createTransactionTable(transactions, id) {
 
       tableRowsContainer.prepend(row);
     });
+
+    updatePaginationControls(pageNumber, pageSize);
   }
 
-  updateTableRows();
+  function updatePaginationControls(pageNumber, pageSize) {
+    paginationControls.textContent = "";
 
-  return el("div.account-table-wrapper", [tableHeader, tableRowsContainer]);
+    const totalPages = Math.ceil(transactions.length / pageSize);
+
+    for (let i = totalPages; i > 0; i--) {
+      const pageButton = createButton({
+        text: i.toString(),
+        onClick: () => updateTableRows(i, pageSize),
+        disabled: i === pageNumber,
+      });
+
+      paginationControls.prepend(pageButton);
+    }
+  }
+
+  updateTableRows(1, 25);
+
+  return el("div.account-table-wrapper", [
+    tableHeader,
+    tableRowsContainer,
+    paginationControls,
+  ]);
 }
