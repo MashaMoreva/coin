@@ -42,17 +42,20 @@ export function createAccounts(router) {
     ".accounts-container"
   );
 
-  const inputElement = sortSelect.querySelector(".dropdown-input");
 
-  console.log("Input Element:", inputElement);
-  inputElement.addEventListener("input", () => {
-    console.log("Input event:", inputElement.value);
-    currentSortOrder = inputElement.value;
-    sortAndRenderAccounts(currentSortOrder);
+  sortSelect.addEventListener("click", () => {
+    const selectedOption = sortSelect.querySelector(".checked");
+    if (selectedOption) {
+      currentSortOrder = selectedOption.textContent;
+      getAccounts().then((userAccounts) => {
+        const sortedAccounts = sortAccounts(userAccounts, currentSortOrder);
+        renderAccounts(sortedAccounts);
+      });
+    }
   });
 
-  getAccounts().then((userAccounts) => {
-    sortAndRenderAccounts(currentSortOrder, userAccounts);
+  getAccounts().then(() => {
+    sortAndRenderAccounts(currentSortOrder);
   });
 
   bodyContainer.innerHTML = "";
@@ -61,11 +64,9 @@ export function createAccounts(router) {
   mount(bodyContainer, mainContainer);
 
   function sortAndRenderAccounts(sortOrder) {
-    console.log("Сортировка и отрисовка счетов:", sortOrder);
     getAccounts().then((userAccounts) => {
       const sortedAccounts = sortAccounts(userAccounts, sortOrder);
-      console.log("Отсортированные счета:", sortedAccounts);
-      renderAccounts(sortedAccounts);
+      renderAccounts(sortedAccounts, sortOrder);
     });
   }
 
@@ -74,7 +75,7 @@ export function createAccounts(router) {
       case "По номеру":
         return accounts.sort((a, b) => a.account.localeCompare(b.account));
       case "По балансу":
-        return accounts.sort((a, b) => a.balance - b.balance);
+        return accounts.sort((a, b) => b.balance - a.balance);
       case "По последней транзакции":
         return accounts;
       default:
